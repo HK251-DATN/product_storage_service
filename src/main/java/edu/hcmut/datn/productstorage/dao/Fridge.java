@@ -10,7 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="fridges")
@@ -23,15 +25,23 @@ public class Fridge {
     private Long fridgeId;
 
     @Column(name="cur_temp")
+    @Getter
+    @Setter
     private Long curTemp;
 
     @Column(name="min_temp")
+    @Getter
+    @Setter
     private Long minTemp;
 
     @Column(name="max_temp")
+    @Getter
+    @Setter
     private Long maxTemp;
 
     @Column(name="storage_tool_id")
+    @Getter
+    @Setter
     private Long storageToolId;
 
     @Column(name="created_at")

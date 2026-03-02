@@ -3,6 +3,8 @@ package edu.hcmut.datn.productstorage.service.impl;
 import java.util.List;
 
 import edu.hcmut.datn.productstorage.dao.Fridge;
+import edu.hcmut.datn.productstorage.exception.FridgeAlreadyExistsException;
+import edu.hcmut.datn.productstorage.exception.FridgeNotFoundException;
 import edu.hcmut.datn.productstorage.repository.FridgeRepository;
 import edu.hcmut.datn.productstorage.service.FridgeService;
 import lombok.AllArgsConstructor;
@@ -14,26 +16,49 @@ public class FridgeServiceImpl implements FridgeService {
 
     @Override
     public Fridge create(Fridge fridge) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (fridgeRepository.existsByStorageToolId(fridge.getStorageToolId())) {
+            throw new FridgeAlreadyExistsException("This storage tool id has been associated with another tool");
+        }
+
+        return fridgeRepository.save(fridge);
     }
 
     @Override
     public Fridge read(Long fridgeId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return fridgeRepository.findById(fridgeId).orElseThrow(() -> new FridgeNotFoundException("Fridge not found"));
     }
 
     @Override
     public List<Fridge> readAll(Integer pageNum, Integer pageSize) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+
+        return fridgeRepository.findAll(pageable).toList();
     }
 
     @Override
     public Fridge update(Long fridgeId, Fridge fridge) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Fridge curFridge = read(fridgeId);
+
+        if (fridge.getCurTemp() != null) {
+            curFridge.setCurTemp(fridge.getCurTemp())
+        }        
+        if (fridge.getMinTemp() != null) {
+            curFridge.setMinTemp(fridge.getMinTemp())
+        }        
+        if (fridge.getMaxTemp() != null) {
+            curFridge.setMaxTemp(fridge.getMaxTemp())
+        }        
+        if (fridge.getStorageToolId() != null) {
+            curFridge.setStorageToolId(fridge.getStorageToolId())
+        }
+        
+        return fridgeRepository.save(curFridge);
     }
 
     @Override
     public void delete(Long fridgeId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Fridge curFridge = read(fridgeId);
+
+        fridgeRepository.delete(curFridge);
     }
 }
