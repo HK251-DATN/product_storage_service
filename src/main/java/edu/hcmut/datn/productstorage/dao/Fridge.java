@@ -46,9 +46,19 @@ public class Fridge {
 
     @Column(name="created_at")
     private LocalDateTime createdAt;
-    
+
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
+
+    public Fridge(Long curTemp, Long minTemp, Long maxTemp, Long storageToolId) {
+
+        this.curTemp = curTemp;
+        this.minTemp = minTemp;
+        this.maxTemp = maxTemp;
+        this.storageToolId = storageToolId;
+    }
+
+
 
     @PrePersist
     protected void onCreate() {

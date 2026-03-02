@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import edu.hcmut.datn.productstorage.dao.RackLevel;
 import edu.hcmut.datn.productstorage.exception.RackLevelNotFoundException;
@@ -12,6 +13,7 @@ import edu.hcmut.datn.productstorage.service.RackLevelService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Service
 public class RackLevelServiceImpl implements RackLevelService {
 
     private final RackLevelRepository rackLevelRepository;

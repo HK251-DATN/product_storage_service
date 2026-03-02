@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import edu.hcmut.datn.productstorage.dao.Rack;
 import edu.hcmut.datn.productstorage.exception.RackAlreadyExistsException;
@@ -13,6 +14,7 @@ import edu.hcmut.datn.productstorage.service.RackService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Service
 public class RackServiceImpl implements RackService {
 
     private final RackRepository rackRepository;

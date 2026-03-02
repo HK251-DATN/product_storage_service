@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import edu.hcmut.datn.productstorage.dao.ProductGeneral;
 import edu.hcmut.datn.productstorage.exception.ProductGeneralNotFoundException;
@@ -12,6 +13,7 @@ import edu.hcmut.datn.productstorage.service.ProductGeneralService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Service
 public class ProductGeneralServiceImpl implements ProductGeneralService {
 
     private final ProductGeneralRepository productGeneralRepository;

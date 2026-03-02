@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import edu.hcmut.datn.productstorage.dao.ProductDetail;
 import edu.hcmut.datn.productstorage.exception.ProductDetailNotFoundException;
@@ -12,6 +13,7 @@ import edu.hcmut.datn.productstorage.service.ProductDetailService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Service
 public class ProductDetailServiceImpl implements ProductDetailService {
 
     private final ProductDetailRepository productDetailRepository;

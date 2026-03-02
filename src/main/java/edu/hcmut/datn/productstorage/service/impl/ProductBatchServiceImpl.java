@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
 import edu.hcmut.datn.productstorage.exception.ProductBatchNotFoundException;
@@ -12,6 +13,7 @@ import edu.hcmut.datn.productstorage.service.ProductBatchService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Service
 public class ProductBatchServiceImpl implements ProductBatchService {
 
     private final ProductBatchRepository productBatchRepository;

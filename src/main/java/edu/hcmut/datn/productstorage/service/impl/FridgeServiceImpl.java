@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import edu.hcmut.datn.productstorage.dao.Fridge;
 import edu.hcmut.datn.productstorage.exception.FridgeAlreadyExistsException;
@@ -13,6 +14,7 @@ import edu.hcmut.datn.productstorage.service.FridgeService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Service
 public class FridgeServiceImpl implements FridgeService {
 
     private final FridgeRepository fridgeRepository;

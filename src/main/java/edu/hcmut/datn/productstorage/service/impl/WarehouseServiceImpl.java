@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 
 import edu.hcmut.datn.productstorage.dao.Warehouse;
 import edu.hcmut.datn.productstorage.exception.WarehouseNotFoundException;
@@ -12,6 +13,7 @@ import edu.hcmut.datn.productstorage.service.WarehouseService;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
+@Service
 public class WarehouseServiceImpl implements WarehouseService {
 
     private final WarehouseRepository warehouseRepository;
