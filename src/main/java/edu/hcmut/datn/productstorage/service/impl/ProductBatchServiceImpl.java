@@ -2,7 +2,11 @@ package edu.hcmut.datn.productstorage.service.impl;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
+import edu.hcmut.datn.productstorage.exception.ProductBatchNotFoundException;
 import edu.hcmut.datn.productstorage.repository.ProductBatchRepository;
 import edu.hcmut.datn.productstorage.service.ProductBatchService;
 import lombok.AllArgsConstructor;
@@ -13,27 +17,52 @@ public class ProductBatchServiceImpl implements ProductBatchService {
     private final ProductBatchRepository productBatchRepository;
 
     @Override
-    public ProductBatch create(ProductBatch fridge) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ProductBatch create(ProductBatch productBatch) {
+        return productBatchRepository.save(productBatch);
     }
 
     @Override
-    public ProductBatch read(Long fridgeId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ProductBatch read(Long productBatchId) {
+        return productBatchRepository.findById(productBatchId).orElseThrow(() -> new ProductBatchNotFoundException("Product batch not found"));
     }
 
     @Override
     public List<ProductBatch> readAll(Integer pageNum, Integer pageSize) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+
+        return productBatchRepository.findAll(pageable).toList();
     }
 
     @Override
-    public ProductBatch update(Long fridgeId, ProductBatch fridge) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public ProductBatch update(Long productBatchId, ProductBatch productBatch) {
+        ProductBatch curProductBatch = read(productBatchId);
+
+        if (productBatch.getQuantity() != null) {
+            curProductBatch.setQuantity(productBatch.getQuantity());
+        }
+        if (productBatch.getUnit() != null) {
+            curProductBatch.setUnit(productBatch.getUnit());
+        }
+        if (productBatch.getNote() != null) {
+            curProductBatch.setNote(productBatch.getNote());
+        }
+        if (productBatch.getReceivedAt() != null) {
+            curProductBatch.setReceivedAt(productBatch.getReceivedAt());
+        }
+        if (productBatch.getExpiredAt() != null) {
+            curProductBatch.setExpiredAt(productBatch.getExpiredAt());
+        }
+        if (productBatch.getProviderId() != null) {
+            curProductBatch.setProviderId(productBatch.getProviderId());
+        }
+
+        return productBatchRepository.save(curProductBatch);
     }
 
     @Override
-    public void delete(Long fridgeId) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void delete(Long productBatchId) {
+        ProductBatch productBatch = read(productBatchId);
+
+        productBatchRepository.delete(productBatch);
     }
 }

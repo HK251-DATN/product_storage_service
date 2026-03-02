@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import edu.hcmut.datn.productstorage.common.enums.StorageToolStatus;
 import edu.hcmut.datn.productstorage.common.enums.StorageType;
+import edu.hcmut.datn.productstorage.dao.StorageTool;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,8 @@ public class StorageToolUpdateRequest {
     private Long usagePercentage;
     private Long warehouseId;
     private StorageType toolType;
+
+    public StorageTool toEntity() {
+        return new StorageTool(lastMaintainanceDate, status, usagePercentage, warehouseId, toolType);
+    }
 }

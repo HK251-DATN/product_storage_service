@@ -2,7 +2,11 @@ package edu.hcmut.datn.productstorage.service.impl;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import edu.hcmut.datn.productstorage.dao.Warehouse;
+import edu.hcmut.datn.productstorage.exception.WarehouseNotFoundException;
 import edu.hcmut.datn.productstorage.repository.WarehouseRepository;
 import edu.hcmut.datn.productstorage.service.WarehouseService;
 import lombok.AllArgsConstructor;
@@ -13,33 +17,50 @@ public class WarehouseServiceImpl implements WarehouseService {
     private final WarehouseRepository warehouseRepository;
 
     @Override
-    public Warehouse create(Warehouse fridge) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+    public Warehouse create(Warehouse warehouse) {
+        return warehouseRepository.save(warehouse);
     }
 
     @Override
-    public Warehouse read(Long fridgeId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'read'");
+    public Warehouse read(Long warehouseId) {
+        return warehouseRepository.findById(warehouseId).orElseThrow(() -> new WarehouseNotFoundException("Warehouse not found"));
     }
 
     @Override
     public List<Warehouse> readAll(Integer pageNum, Integer pageSize) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'readAll'");
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+
+        return warehouseRepository.findAll(pageable).toList();
     }
 
     @Override
-    public Warehouse update(Long fridgeId, Warehouse fridge) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public Warehouse update(Long warehouseId, Warehouse warehouse) {
+        Warehouse curWarehouse = read(warehouseId);
+
+        if (warehouse.getAddress() != null) {
+            curWarehouse.setAddress(warehouse.getAddress());
+        }
+
+        if (warehouse.getUsagePercentage() != null) {
+            curWarehouse.setUsagePercentage(warehouse.getUsagePercentage());
+        }
+
+        if (warehouse.getNumOfFridge() != null) {
+            curWarehouse.setNumOfFridge(warehouse.getNumOfFridge());
+        }
+
+        if (warehouse.getNumOfRack() != null) {
+            curWarehouse.setNumOfRack(warehouse.getNumOfRack());
+        }
+
+        return warehouseRepository.save(curWarehouse);
     }
 
     @Override
-    public void delete(Long fridgeId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(Long warehouseId) {
+        Warehouse warehouse = read(warehouseId);
+
+        warehouseRepository.delete(warehouse);
     }
 
 }

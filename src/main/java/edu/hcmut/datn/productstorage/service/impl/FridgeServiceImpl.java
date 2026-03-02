@@ -2,6 +2,9 @@ package edu.hcmut.datn.productstorage.service.impl;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import edu.hcmut.datn.productstorage.dao.Fridge;
 import edu.hcmut.datn.productstorage.exception.FridgeAlreadyExistsException;
 import edu.hcmut.datn.productstorage.exception.FridgeNotFoundException;
@@ -40,18 +43,18 @@ public class FridgeServiceImpl implements FridgeService {
         Fridge curFridge = read(fridgeId);
 
         if (fridge.getCurTemp() != null) {
-            curFridge.setCurTemp(fridge.getCurTemp())
-        }        
-        if (fridge.getMinTemp() != null) {
-            curFridge.setMinTemp(fridge.getMinTemp())
-        }        
-        if (fridge.getMaxTemp() != null) {
-            curFridge.setMaxTemp(fridge.getMaxTemp())
-        }        
-        if (fridge.getStorageToolId() != null) {
-            curFridge.setStorageToolId(fridge.getStorageToolId())
+            curFridge.setCurTemp(fridge.getCurTemp());
         }
-        
+        if (fridge.getMinTemp() != null) {
+            curFridge.setMinTemp(fridge.getMinTemp());
+        }
+        if (fridge.getMaxTemp() != null) {
+            curFridge.setMaxTemp(fridge.getMaxTemp());
+        }
+        if (fridge.getStorageToolId() != null) {
+            curFridge.setStorageToolId(fridge.getStorageToolId());
+        }
+
         return fridgeRepository.save(curFridge);
     }
 

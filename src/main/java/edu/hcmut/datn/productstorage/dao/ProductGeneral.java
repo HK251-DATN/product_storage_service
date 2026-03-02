@@ -8,7 +8,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="product_generals")
@@ -16,16 +18,25 @@ import lombok.NoArgsConstructor;
 public class ProductGeneral {
     @Id
     @Column(name="prod_gen_id")
+    @Getter
+    @Setter
     private Long prodGenId;
 
     @Column(name="name")
+    @Getter
+    @Setter
     private String name;
 
     @Column(name="created_at")
     private LocalDateTime createdAt;
-    
+
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
+
+    public ProductGeneral(Long prodGenId, String name) {
+        this.prodGenId = prodGenId;
+        this.name = name;
+    }
 
     @PrePersist
     protected void onCreate() {

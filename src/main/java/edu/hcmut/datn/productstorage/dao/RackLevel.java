@@ -10,29 +10,40 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name="rack_levels")
+@Table(name = "rack_levels")
 @NoArgsConstructor
 public class RackLevel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="rack_level_id")
+    @Column(name = "rack_level_id")
     private Long rackLevelId;
 
-    @Column(name="usage_percentage")
+    @Column(name = "usage_percentage")
+    @Getter
+    @Setter
     private Long usagePercentage;
 
-    @Column(name="rack_id")
+    @Column(name = "rack_id")
+    @Getter
+    @Setter
     private Long rackId;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    @Column(name="updated_at")
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public RackLevel(Long usagePercentage, Long rackId) {
+        this.usagePercentage = usagePercentage;
+        this.rackId = rackId;
+    }
 
     @PrePersist
     protected void onCreate() {

@@ -10,10 +10,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name="rack")
+@Table(name = "rack")
 @NoArgsConstructor
 public class Rack {
 
@@ -23,16 +25,25 @@ public class Rack {
     private Long rackId;
 
     @Column(name = "num_of_level")
+    @Getter
+    @Setter
     private Long numOfLevel;
 
     @Column(name = "storage_tool_id")
+    @Getter
+    @Setter
     private Long storageToolId;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    @Column(name="updated_at")
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    public Rack(Long numOfLevel, Long storageToolId) {
+        this.numOfLevel = numOfLevel;
+        this.storageToolId = storageToolId;
+    }
 
     @PrePersist
     protected void onCreate() {

@@ -2,7 +2,12 @@ package edu.hcmut.datn.productstorage.service.impl;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 import edu.hcmut.datn.productstorage.dao.Rack;
+import edu.hcmut.datn.productstorage.exception.RackAlreadyExistsException;
+import edu.hcmut.datn.productstorage.exception.RackNotFoundException;
 import edu.hcmut.datn.productstorage.repository.RackRepository;
 import edu.hcmut.datn.productstorage.service.RackService;
 import lombok.AllArgsConstructor;
@@ -13,33 +18,46 @@ public class RackServiceImpl implements RackService {
     private final RackRepository rackRepository;
 
     @Override
-    public Rack create(Rack fridge) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+    public Rack create(Rack rack) {
+        if (rackRepository.existsByStorageToolId(rack.getStorageToolId())) {
+            throw new RackAlreadyExistsException("This storage tool id has been associated with another tool");
+        }
+
+        return rackRepository.save(rack);
     }
 
     @Override
-    public Rack read(Long fridgeId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'read'");
+    public Rack read(Long rackId) {
+        return rackRepository.findById(rackId).orElseThrow(() -> new RackNotFoundException("Rack not found"));
     }
 
     @Override
     public List<Rack> readAll(Integer pageNum, Integer pageSize) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'readAll'");
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+
+        return rackRepository.findAll(pageable).toList();
     }
 
     @Override
-    public Rack update(Long fridgeId, Rack fridge) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    public Rack update(Long rackId, Rack rack) {
+        Rack curRack = read(rackId);
+
+        if (rack.getNumOfLevel() != null) {
+            curRack.setNumOfLevel(rack.getNumOfLevel());
+        }
+
+        if (rack.getStorageToolId() != null) {
+            curRack.setStorageToolId(rack.getStorageToolId());
+        }
+
+        return rackRepository.save(curRack);
     }
 
     @Override
-    public void delete(Long fridgeId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(Long rackId) {
+        Rack rack = read(rackId);
+
+        rackRepository.delete(rack);
     }
 
 }

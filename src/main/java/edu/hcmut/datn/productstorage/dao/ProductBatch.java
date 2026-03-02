@@ -11,7 +11,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="product_batchs")
@@ -24,18 +26,28 @@ public class ProductBatch {
     private Long batchId;
 
     @Column(name="quantity")
+    @Setter
+    @Getter
     private Long quantity;
 
     @Column(name="unit")
+    @Setter
+    @Getter
     private Unit unit;
 
     @Column(name="note")
+    @Setter
+    @Getter
     private String note;
 
     @Column(name="received_at")
+    @Setter
+    @Getter
     private LocalDateTime receivedAt;
 
     @Column(name="expired_at")
+    @Setter
+    @Getter
     private LocalDateTime expiredAt;
 
     @Column(name="updated_at")
@@ -45,7 +57,19 @@ public class ProductBatch {
     private LocalDateTime createdAt;
 
     @Column(name="provider_id")
+    @Setter
+    @Getter
     private Long providerId;
+
+    public ProductBatch(Long quantity, Unit unit, String note, LocalDateTime receivedAt, LocalDateTime expiredAt, Long providerId) {
+
+        this.quantity = quantity;
+        this.unit = unit;
+        this.note = note;
+        this.receivedAt = receivedAt;
+        this.expiredAt = expiredAt;
+        this.providerId = providerId;
+    }
 
     @PrePersist
     protected void onCreate() {

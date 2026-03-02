@@ -12,48 +12,77 @@ import jakarta.persistence.Id;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name="product_details")
+@Table(name = "product_details")
 @NoArgsConstructor
 public class ProductDetail {
 
-    
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="prod_detail_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "prod_detail_id")
     private Long prodDetailId;
 
-    @Column(name="status")
+    @Column(name = "status")
+    @Getter
+    @Setter
     private ProductStatus status;
 
-    @Column(name="price")
+    @Column(name = "price")
+    @Getter
+    @Setter
     private Long price;
 
-    @Column(name="num_of_star")
+    @Column(name = "num_of_star")
+    @Getter
+    @Setter
     private Long numOfStar;
 
-    @Column(name="created_at")
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    @Column(name="updated_at")
+
+    @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="storage_tool_id")
+    @Column(name = "storage_tool_id")
+    @Getter
+    @Setter
     private Long storageToolId;
 
-    @Column(name="batch_id")
+    @Column(name = "batch_id")
+    @Getter
+    @Setter
     private Long batchId;
 
-    @Column(name="prod_gen_id")
+    @Column(name = "prod_gen_id")
+    @Getter
+    @Setter
     private Long prodGenId;
-    
-    @Column(name="unit")
+
+    @Column(name = "unit")
+    @Getter
+    @Setter
     private Unit unit;
 
-    @Column(name="unit_quantity")
+    @Column(name = "unit_quantity")
+    @Getter
+    @Setter
     private Long unitQuantity;
+
+    public ProductDetail(ProductStatus status, Long price, Long numOfStar, Long storageToolId, Long batchId, Long prodGenId, Unit unit, Long unitQuantity) {
+
+        this.status = status;
+        this.price = price;
+        this.numOfStar = numOfStar;
+        this.storageToolId = storageToolId;
+        this.batchId = batchId;
+        this.prodGenId = prodGenId;
+        this.unit = unit;
+        this.unitQuantity = unitQuantity;
+    }
 
     @PrePersist
     protected void onCreate() {
@@ -65,5 +94,5 @@ public class ProductDetail {
     protected void onUpdate() {
         updatedAt = LocalDateTime.now(); // Update on every save after creation
     }
-    
+
 }

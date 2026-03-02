@@ -6,4 +6,5 @@ import edu.hcmut.datn.productstorage.dao.Rack;
 
 public interface RackRepository extends JpaRepository<Rack, Long> {
 
+    boolean existsByStorageToolId(Long storageToolId);
 }
