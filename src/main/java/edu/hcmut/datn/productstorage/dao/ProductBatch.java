@@ -53,7 +53,7 @@ public class ProductBatch {
     @Column(name="updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="updated_at")
+    @Column(name="created_at")
     private LocalDateTime createdAt;
 
     @Column(name="provider_id")
