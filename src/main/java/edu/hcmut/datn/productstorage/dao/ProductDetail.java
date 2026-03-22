@@ -4,14 +4,7 @@ import java.time.LocalDateTime;
 
 import edu.hcmut.datn.productstorage.common.enums.ProductStatus;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,11 +17,13 @@ public class ProductDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "prod_detail_id")
+    @Getter
     private Long prodDetailId;
 
     @Column(name = "status")
     @Getter
     @Setter
+    @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
     @Column(name = "price")
@@ -65,6 +60,7 @@ public class ProductDetail {
     @Column(name = "unit")
     @Getter
     @Setter
+    @Enumerated(EnumType.STRING)
     private Unit unit;
 
     @Column(name = "unit_quantity")
@@ -82,6 +78,21 @@ public class ProductDetail {
         this.prodGenId = prodGenId;
         this.unit = unit;
         this.unitQuantity = unitQuantity;
+    }
+
+    public ProductDetail copy() {
+        ProductDetail productDetail = new ProductDetail();
+
+        productDetail.setStatus(status);
+        productDetail.setPrice(price);
+        productDetail.setNumOfStar(numOfStar);
+        productDetail.setStorageToolId(storageToolId);
+        productDetail.setBatchId(batchId);
+        productDetail.setProdGenId(prodGenId);
+        productDetail.setUnit(unit);
+        productDetail.setUnitQuantity(unitQuantity);
+
+        return productDetail;
     }
 
     @PrePersist

@@ -2,6 +2,7 @@ package edu.hcmut.datn.productstorage.service.impl;
 
 import java.util.List;
 
+import edu.hcmut.datn.productstorage.messaging.productgeneral.ProductGeneralCreatedEvent;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -48,7 +49,6 @@ public class ProductGeneralServiceImpl implements ProductGeneralService {
         }
 
         return productGeneralRepository.save(curProductGeneral);
-
     }
 
     @Override
@@ -58,4 +58,8 @@ public class ProductGeneralServiceImpl implements ProductGeneralService {
         productGeneralRepository.delete(productGeneral);
     }
 
+    @Override
+    public ProductGeneral create(ProductGeneralCreatedEvent event) {
+        return productGeneralRepository.save(event.toProductGeneralEntity());
+    }
 }

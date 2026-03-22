@@ -2,6 +2,8 @@ package edu.hcmut.datn.productstorage.controller;
 
 import java.util.List;
 
+import edu.hcmut.datn.productstorage.dto.request.ProcessProductBatchRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,7 @@ import lombok.AllArgsConstructor;
 @Controller
 @AllArgsConstructor
 @RequestMapping("/api/product-detail")
+@Slf4j
 public class ProductDetailController {
 
     private final ProductDetailService productDetailService;
@@ -94,6 +97,27 @@ public class ProductDetailController {
 
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Delete productDetail successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/process-batch")
+    public ResponseEntity<ApiResponse<List<ProductDetail>>> processBatch(
+            @RequestBody ProcessProductBatchRequest request
+            ) {
+        try {
+            List<ProductDetail> newProductDetails = productDetailService.processProductBatch(
+                    request.toEntity()
+            );
+
+            newProductDetails.forEach(productDetail -> {
+                log.info(productDetail.getProdDetailId().toString());
+            });
+
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Process batch successfully", newProductDetails));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));

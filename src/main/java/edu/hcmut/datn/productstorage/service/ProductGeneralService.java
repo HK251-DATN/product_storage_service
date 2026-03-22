@@ -3,6 +3,7 @@ package edu.hcmut.datn.productstorage.service;
 import java.util.List;
 
 import edu.hcmut.datn.productstorage.dao.ProductGeneral;
+import edu.hcmut.datn.productstorage.messaging.productgeneral.ProductGeneralCreatedEvent;
 
 public interface ProductGeneralService {
 
@@ -14,5 +15,7 @@ public interface ProductGeneralService {
 
     ProductGeneral update(Long fridgeId, ProductGeneral fridge);
 
-    void delete(Long fridgeId);    
+    void delete(Long fridgeId);
+
+    ProductGeneral create(ProductGeneralCreatedEvent event);
 }
