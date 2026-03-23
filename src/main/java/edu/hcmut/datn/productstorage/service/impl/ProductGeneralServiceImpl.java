@@ -31,7 +31,7 @@ public class ProductGeneralServiceImpl implements ProductGeneralService {
 
     @Override
     public List<ProductGeneral> readAll(Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
 
         return productGeneralRepository.findAll(pageable).toList();
     }

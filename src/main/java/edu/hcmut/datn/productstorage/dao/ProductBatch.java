@@ -16,6 +16,7 @@ public class ProductBatch {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="batch_id")
+    @Getter
     private Long batchId;
 
     @Column(name="quantity")
@@ -45,9 +46,11 @@ public class ProductBatch {
     private LocalDateTime expiredAt;
 
     @Column(name="updated_at")
+    @Getter
     private LocalDateTime updatedAt;
 
     @Column(name="created_at")
+    @Getter
     private LocalDateTime createdAt;
 
     @Column(name="provider_id")

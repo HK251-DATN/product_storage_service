@@ -37,9 +37,11 @@ public class ProductDetail {
     private Long numOfStar;
 
     @Column(name = "created_at")
+    @Getter
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")
+    @Getter
     private LocalDateTime updatedAt;
 
     @Column(name = "storage_tool_id")

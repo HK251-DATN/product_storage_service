@@ -30,7 +30,7 @@ public class ProductBatchServiceImpl implements ProductBatchService {
 
     @Override
     public List<ProductBatch> readAll(Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
 
         return productBatchRepository.findAll(pageable).toList();
     }
