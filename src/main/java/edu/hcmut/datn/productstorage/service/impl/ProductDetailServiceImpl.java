@@ -6,9 +6,12 @@ import java.util.List;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
 import edu.hcmut.datn.productstorage.dao.ProductGeneral;
+import edu.hcmut.datn.productstorage.messaging.batchdetail.BatchDetailCreateEvent;
+import edu.hcmut.datn.productstorage.messaging.batchdetail.BatchDetailProducer;
 import edu.hcmut.datn.productstorage.service.ProductBatchService;
 import edu.hcmut.datn.productstorage.service.ProductGeneralService;
 import edu.hcmut.datn.productstorage.util.UnitConverter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,9 @@ import edu.hcmut.datn.productstorage.repository.ProductDetailRepository;
 import edu.hcmut.datn.productstorage.service.ProductDetailService;
 import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class ProductDetailServiceImpl implements ProductDetailService {
 
@@ -29,6 +33,8 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private final ProductBatchService productBatchService;
 
     private final ProductGeneralService productGeneralService;
+
+    private final BatchDetailProducer  batchDetailProducer;
 
     @Override
     public ProductDetail create(ProductDetail productDetail) {
@@ -103,6 +109,19 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
         List<ProductDetail> savedProductDetails = productDetailRepository.saveAll(productDetails);
         productDetailRepository.flush();
+
+        BatchDetailCreateEvent event = new BatchDetailCreateEvent(
+            (long) (Math.random() * 9999),
+                productGeneral.getProdGenId(),
+                numOfProdDetail,
+                productDetail.getPrice(),
+                (long) 0,
+                (long) 0,
+                ""
+        );
+
+        batchDetailProducer.publishBatchDetailCreated(event);
+
         return savedProductDetails;
     }
 }
