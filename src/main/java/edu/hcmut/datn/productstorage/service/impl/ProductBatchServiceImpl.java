@@ -15,30 +15,30 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Service
 public class ProductBatchServiceImpl implements ProductBatchService {
-
+    
     private final ProductBatchRepository productBatchRepository;
-
+    
     @Override
     public ProductBatch create(ProductBatch productBatch) {
         return productBatchRepository.save(productBatch);
     }
-
+    
     @Override
     public ProductBatch read(Long productBatchId) {
-        return productBatchRepository.findById(productBatchId).orElseThrow(() -> new ProductBatchNotFoundException("Product batch not found"));
+        return productBatchRepository.findById(productBatchId)
+                .orElseThrow(() -> new ProductBatchNotFoundException("Product batch not found"));
     }
-
+    
     @Override
     public List<ProductBatch> readAll(Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
-
         return productBatchRepository.findAll(pageable).toList();
     }
-
+    
     @Override
     public ProductBatch update(Long productBatchId, ProductBatch productBatch) {
         ProductBatch curProductBatch = read(productBatchId);
-
+        
         if (productBatch.getQuantity() != null) {
             curProductBatch.setQuantity(productBatch.getQuantity());
         }
@@ -60,14 +60,13 @@ public class ProductBatchServiceImpl implements ProductBatchService {
         if (productBatch.getSubSubcategoryId() != null) {
             curProductBatch.setSubSubcategoryId(productBatch.getSubSubcategoryId());
         }
-
+        
         return productBatchRepository.save(curProductBatch);
     }
-
+    
     @Override
     public void delete(Long productBatchId) {
         ProductBatch productBatch = read(productBatchId);
-
         productBatchRepository.delete(productBatch);
     }
 }

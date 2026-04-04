@@ -1,7 +1,6 @@
 package edu.hcmut.datn.productstorage.dto.request;
 
 import edu.hcmut.datn.productstorage.common.enums.ProductStatus;
-import edu.hcmut.datn.productstorage.common.enums.Unit;
 import edu.hcmut.datn.productstorage.dao.ProductDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,17 +10,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDetailUpdateRequest {
-
     private ProductStatus status;
     private Long price;
     private Long numOfStar;
     private Long storageToolId;
     private Long batchId;
     private Long prodGenId;
-    private Unit unit;
-    private Long unitQuantity;
-
+    
     public ProductDetail toEntity() {
-        return new ProductDetail(status, price, numOfStar, storageToolId, batchId, prodGenId, unit, unitQuantity);
+        return new ProductDetail(status, price, numOfStar, storageToolId, batchId, prodGenId);
     }
 }

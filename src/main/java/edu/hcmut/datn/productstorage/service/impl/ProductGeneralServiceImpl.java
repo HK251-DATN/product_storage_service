@@ -16,48 +16,61 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 @Service
 public class ProductGeneralServiceImpl implements ProductGeneralService {
-
+    
     private final ProductGeneralRepository productGeneralRepository;
-
+    
     @Override
     public ProductGeneral create(ProductGeneral productGen) {
         return productGeneralRepository.save(productGen);
     }
-
+    
     @Override
     public ProductGeneral read(Long productGenId) {
-        return productGeneralRepository.findById(productGenId).orElseThrow(() -> new ProductGeneralNotFoundException("Product general not found"));
+        return productGeneralRepository.findById(productGenId)
+                .orElseThrow(() -> new ProductGeneralNotFoundException("Product general not found"));
     }
-
+    
     @Override
     public List<ProductGeneral> readAll(Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
-
         return productGeneralRepository.findAll(pageable).toList();
     }
-
+    
     @Override
     public ProductGeneral update(Long productGenId, ProductGeneral productGen) {
         ProductGeneral curProductGeneral = read(productGenId);
-
+        
         if (productGen.getName() != null) {
             curProductGeneral.setName(productGen.getName());
         }
-
         if (productGen.getProdGenId() != null) {
             curProductGeneral.setProdGenId(productGen.getProdGenId());
         }
-
+        if (productGen.getImgUrl() != null) {
+            curProductGeneral.setImgUrl(productGen.getImgUrl());
+        }
+        if (productGen.getDescription() != null) {
+            curProductGeneral.setDescription(productGen.getDescription());
+        }
+        if (productGen.getSubSubcategoryId() != null) {
+            curProductGeneral.setSubSubcategoryId(productGen.getSubSubcategoryId());
+        }
+        if (productGen.getUnit() != null) {
+            curProductGeneral.setUnit(productGen.getUnit());
+        }
+        if (productGen.getUnitQuantity() != null) {
+            curProductGeneral.setUnitQuantity(productGen.getUnitQuantity());
+        }
+        
         return productGeneralRepository.save(curProductGeneral);
     }
-
+    
     @Override
     public void delete(Long productGenId) {
         ProductGeneral productGeneral = read(productGenId);
-
         productGeneralRepository.delete(productGeneral);
     }
-
+    
     @Override
     public ProductGeneral create(ProductGeneralCreatedEvent event) {
         return productGeneralRepository.save(event.toProductGeneralEntity());
