@@ -57,6 +57,9 @@ public class ProductBatchServiceImpl implements ProductBatchService {
         if (productBatch.getProviderId() != null) {
             curProductBatch.setProviderId(productBatch.getProviderId());
         }
+        if (productBatch.getSubSubcategoryId() != null) {
+            curProductBatch.setSubSubcategoryId(productBatch.getSubSubcategoryId());
+        }
 
         return productBatchRepository.save(curProductBatch);
     }

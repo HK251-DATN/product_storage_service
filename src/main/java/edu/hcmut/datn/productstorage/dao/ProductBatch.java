@@ -57,8 +57,13 @@ public class ProductBatch {
     @Setter
     @Getter
     private Long providerId;
+    
+    @Column(name = "sub_subcategory_id")
+    @Setter
+    @Getter
+    private Long subSubcategoryId;
 
-    public ProductBatch(Long quantity, Unit unit, String note, LocalDateTime receivedAt, LocalDateTime expiredAt, Long providerId) {
+    public ProductBatch(Long quantity, Unit unit, String note, LocalDateTime receivedAt, LocalDateTime expiredAt, Long providerId, Long subSubcategoryId) {
 
         this.quantity = quantity;
         this.unit = unit;
@@ -66,6 +71,7 @@ public class ProductBatch {
         this.receivedAt = receivedAt;
         this.expiredAt = expiredAt;
         this.providerId = providerId;
+        this.subSubcategoryId = subSubcategoryId;
     }
 
     @PrePersist

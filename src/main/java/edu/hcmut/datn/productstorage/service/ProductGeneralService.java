@@ -7,15 +7,15 @@ import edu.hcmut.datn.productstorage.messaging.productgeneral.ProductGeneralCrea
 
 public interface ProductGeneralService {
 
-    ProductGeneral create(ProductGeneral fridge);
+    ProductGeneral create(ProductGeneral productGeneral);
 
-    ProductGeneral read(Long fridgeId);
+    ProductGeneral read(Long productGeneralId);
 
     List<ProductGeneral> readAll(Integer pageNum, Integer pageSize);
 
-    ProductGeneral update(Long fridgeId, ProductGeneral fridge);
+    ProductGeneral update(Long productGeneralId, ProductGeneral productGeneral);
 
-    void delete(Long fridgeId);
+    void delete(Long productGeneralId);
 
     ProductGeneral create(ProductGeneralCreatedEvent event);
 }

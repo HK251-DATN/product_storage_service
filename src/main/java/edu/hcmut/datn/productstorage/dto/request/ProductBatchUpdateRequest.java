@@ -19,8 +19,9 @@ public class ProductBatchUpdateRequest {
     private LocalDateTime receivedAt;
     private LocalDateTime expiredAt;
     private Long providerId;
+    private Long subSubcategoryId;
 
     public ProductBatch toEntity() {
-        return new ProductBatch(quantity, unit, note, receivedAt, expiredAt, providerId);
+        return new ProductBatch(quantity, unit, note, receivedAt, expiredAt, providerId, subSubcategoryId);
     }
 }

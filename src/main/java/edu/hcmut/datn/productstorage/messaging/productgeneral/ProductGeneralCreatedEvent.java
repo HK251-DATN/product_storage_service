@@ -20,7 +20,7 @@ public class ProductGeneralCreatedEvent {
     private String description;
 
     @Getter
-    private Long categoryId;
+    private Long subSubcategoryId;
 
     public ProductGeneral toProductGeneralEntity() {
         ProductGeneral newProduct = new ProductGeneral();
@@ -29,7 +29,7 @@ public class ProductGeneralCreatedEvent {
         newProduct.setName(prodName);
         newProduct.setImgUrl(imgUrl);
         newProduct.setDescription(description);
-        newProduct.setCategoryId(categoryId);
+        newProduct.setSubSubcategoryId(subSubcategoryId);
 
         return newProduct;
     }

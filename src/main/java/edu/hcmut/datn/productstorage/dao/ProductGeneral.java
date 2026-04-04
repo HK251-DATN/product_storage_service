@@ -35,12 +35,12 @@ public class ProductGeneral {
     @Column(name = "description")
     @Getter
     @Setter
-
     private String description;
-    @Column(name = "category_id")
+    
+    @Column(name = "subsubcategory_Id")
     @Getter
     @Setter
-    private Long categoryId;
+    private Long subSubcategoryId;
 
     @Column(name="created_at")
     private LocalDateTime createdAt;
