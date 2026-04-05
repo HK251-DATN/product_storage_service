@@ -29,10 +29,8 @@ public class StorageToolServiceImpl implements StorageToolService {
     }
 
     @Override
-    public List<StorageTool> readAll(Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-
-        return storageToolRepository.findAll(pageable).toList();
+    public List<StorageTool> readAll(Long warehouseId, Integer pageNum, Integer pageSize) {
+        return storageToolRepository.search(warehouseId, pageNum, pageSize);
     }
 
     @Override

@@ -22,6 +22,7 @@ public class RackLevel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rack_level_id")
+    @Getter
     private Long rackLevelId;
 
     @Column(name = "usage_percentage")

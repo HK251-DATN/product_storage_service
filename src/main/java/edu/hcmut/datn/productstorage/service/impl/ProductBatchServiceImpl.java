@@ -60,6 +60,9 @@ public class ProductBatchServiceImpl implements ProductBatchService {
         if (productBatch.getSubSubcategoryId() != null) {
             curProductBatch.setSubSubcategoryId(productBatch.getSubSubcategoryId());
         }
+        if (productBatch.getProcessStatus() != null) {
+            curProductBatch.setProcessStatus(productBatch.getProcessStatus());
+        }
         
         return productBatchRepository.save(curProductBatch);
     }

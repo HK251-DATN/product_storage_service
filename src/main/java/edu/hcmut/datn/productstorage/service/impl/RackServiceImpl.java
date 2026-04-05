@@ -2,6 +2,10 @@ package edu.hcmut.datn.productstorage.service.impl;
 
 import java.util.List;
 
+import edu.hcmut.datn.productstorage.dao.StorageTool;
+import edu.hcmut.datn.productstorage.dao.Warehouse;
+import edu.hcmut.datn.productstorage.service.StorageToolService;
+import edu.hcmut.datn.productstorage.service.WarehouseService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,12 +22,22 @@ import lombok.AllArgsConstructor;
 public class RackServiceImpl implements RackService {
 
     private final RackRepository rackRepository;
+    
+    private final WarehouseService warehouseService;
+    
+    private final StorageToolService storageToolService;
 
     @Override
     public Rack create(Rack rack) {
         if (rackRepository.existsByStorageToolId(rack.getStorageToolId())) {
             throw new RackAlreadyExistsException("This storage tool id has been associated with another tool");
         }
+        
+        StorageTool storageTool = storageToolService.read(rack.getStorageToolId());
+        
+        Warehouse warehouse = warehouseService.read(storageTool.getWarehouseId());
+        
+        warehouse.setNumOfRack(warehouse.getNumOfRack() + 1);
 
         return rackRepository.save(rack);
     }

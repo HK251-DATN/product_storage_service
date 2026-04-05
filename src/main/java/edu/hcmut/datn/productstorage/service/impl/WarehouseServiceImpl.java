@@ -30,7 +30,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     public List<Warehouse> readAll(Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
 
         return warehouseRepository.findAll(pageable).toList();
     }

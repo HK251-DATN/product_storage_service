@@ -22,6 +22,7 @@ public class Fridge {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     @Column(name="fridge_id")
+    @Getter
     private Long fridgeId;
 
     @Column(name="cur_temp")

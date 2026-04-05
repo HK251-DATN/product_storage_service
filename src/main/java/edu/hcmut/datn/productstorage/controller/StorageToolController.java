@@ -56,10 +56,11 @@ public class StorageToolController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StorageTool>>> readAll(
+            @RequestParam(defaultValue = "0", name = "warehouse-id") Long wareHouseId,
             @RequestParam(defaultValue = "1") Integer pageNum,
             @RequestParam(defaultValue = "20") Integer pageSize
     ) {
-        List<StorageTool> storageTools = storageToolService.readAll(pageNum, pageSize);
+        List<StorageTool> storageTools = storageToolService.readAll(wareHouseId, pageNum, pageSize);
 
         if (storageTools.isEmpty()) {
             return ResponseEntity.ok().body(ApiResponse.SKIP_AS_GOOD(HttpStatus.OK.toString(), "No storageTool exists", null));

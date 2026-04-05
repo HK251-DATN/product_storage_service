@@ -25,6 +25,7 @@ public class StorageTool {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "storage_tool_id")
+    @Getter
     private Long storageToolId;
 
     @Column(name = "last_maintainance_date")

@@ -2,6 +2,7 @@ package edu.hcmut.datn.productstorage.dto.request;
 
 import java.time.LocalDateTime;
 
+import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
 import lombok.AllArgsConstructor;
@@ -20,8 +21,13 @@ public class ProductBatchCreateRequest {
     private LocalDateTime expiredAt;
     private Long providerId;
     private Long subSubcategoryId;
+    private ProductBatchProcessStatus processStatus;
 
     public ProductBatch toEntity() {
-        return new ProductBatch(quantity, unit, note, receivedAt, expiredAt, providerId, subSubcategoryId);
+        ProductBatch productBatch = new ProductBatch(quantity, unit, note, receivedAt, expiredAt, providerId, subSubcategoryId);
+        if (processStatus != null) {
+            productBatch.setProcessStatus(processStatus);
+        }
+        return productBatch;
     }
 }

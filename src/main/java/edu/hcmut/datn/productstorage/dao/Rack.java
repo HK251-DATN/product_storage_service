@@ -22,6 +22,7 @@ public class Rack {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rack_id")
+    @Getter
     private Long rackId;
 
     @Column(name = "num_of_level")

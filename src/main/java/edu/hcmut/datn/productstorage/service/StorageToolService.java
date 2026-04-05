@@ -10,8 +10,10 @@ public interface StorageToolService {
 
     StorageTool read(Long fridgeId);
 
-    List<StorageTool> readAll(Integer pageNum, Integer pageSize);
-
+//    List<StorageTool> readAll(Integer pageNum, Integer pageSize);
+    
+    public List<StorageTool> readAll(Long warehouseId, Integer pageNum, Integer pageSize);
+    
     StorageTool update(Long fridgeId, StorageTool fridge);
 
     void delete(Long fridgeId);    

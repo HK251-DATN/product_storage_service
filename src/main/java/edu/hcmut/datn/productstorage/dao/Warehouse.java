@@ -22,6 +22,7 @@ public class Warehouse {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "warehouse_id")
+    @Getter
     private Long warehouseId;
 
     @Column(name = "address")

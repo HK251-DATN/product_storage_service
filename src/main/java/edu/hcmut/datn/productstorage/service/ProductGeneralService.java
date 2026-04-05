@@ -18,4 +18,6 @@ public interface ProductGeneralService {
     void delete(Long productGeneralId);
 
     ProductGeneral create(ProductGeneralCreatedEvent event);
+
+    List<ProductGeneral> getSuitableForBatch(Long batchId);
 }

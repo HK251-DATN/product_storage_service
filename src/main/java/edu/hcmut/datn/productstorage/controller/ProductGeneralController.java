@@ -99,4 +99,24 @@ public class ProductGeneralController {
                     .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
         }
     }
+
+    @GetMapping("/suitable-for-batch/{batchId}")
+    public ResponseEntity<ApiResponse<List<ProductGeneral>>> getSuitableForBatch(
+            @PathVariable Long batchId
+    ) {
+        try {
+            List<ProductGeneral> suitableProducts = productGeneralService.getSuitableForBatch(batchId);
+
+            if (suitableProducts.isEmpty()) {
+                return ResponseEntity.ok()
+                        .body(ApiResponse.SKIP_AS_GOOD(HttpStatus.OK.toString(), "No suitable product general found for this batch", null));
+            }
+
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Get suitable product generals successfully", suitableProducts));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
 }

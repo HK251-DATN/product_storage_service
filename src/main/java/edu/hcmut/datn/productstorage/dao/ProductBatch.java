@@ -2,6 +2,7 @@ package edu.hcmut.datn.productstorage.dao;
 
 import java.time.LocalDateTime;
 
+import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -45,6 +46,12 @@ public class ProductBatch {
     @Getter
     private LocalDateTime expiredAt;
 
+    @Column(name="process_status")
+    @Setter
+    @Getter
+    @Enumerated(EnumType.STRING)
+    private ProductBatchProcessStatus processStatus;
+
     @Column(name="updated_at")
     @Getter
     private LocalDateTime updatedAt;
@@ -72,6 +79,7 @@ public class ProductBatch {
         this.expiredAt = expiredAt;
         this.providerId = providerId;
         this.subSubcategoryId = subSubcategoryId;
+        this.processStatus = ProductBatchProcessStatus.PENDING;
     }
 
     @PrePersist
