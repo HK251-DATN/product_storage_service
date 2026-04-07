@@ -36,6 +36,15 @@ Product Storage Service - A Spring Boot microservice that manages warehouse stor
 ./mvnw spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
+### Docker Build and Run
+```bash
+# Build Docker image
+docker build -t product-storage-service:latest .
+
+# Run container (requires .env file)
+docker run -p 9200:9200 --env-file .env product-storage-service:latest
+```
+
 ### Database Operations
 ```bash
 # Backup database
@@ -144,6 +153,41 @@ Service implementations are in `service.impl.*ServiceImpl` and use constructor i
 **ProductGeneralService:**
 - `getSuitableForBatch(Long batchId)` - Returns Product Generals that match a batch's category and have compatible units. Used for filtering product options when processing a batch.
 
+## REST API Structure
+
+All controllers follow a standard REST pattern with base path `/api/{resource}`:
+
+**Standard CRUD Endpoints** (available on all resources):
+- `POST /api/{resource}` - Create new entity
+- `GET /api/{resource}/{id}` - Read entity by ID
+- `GET /api/{resource}?pageNum=1&pageSize=20` - List all (paginated, 1-based index in API, converted to 0-based internally)
+- `PUT /api/{resource}/{id}` - Update entity (partial update, null fields ignored)
+- `DELETE /api/{resource}/{id}` - Delete entity
+
+**Available Resources**:
+- `/api/warehouse` - Warehouse management
+- `/api/storage-tool` - Storage tool operations
+- `/api/rack` - Rack-specific operations
+- `/api/rack-level` - Rack level management
+- `/api/fridge` - Fridge-specific operations
+- `/api/product-general` - Product general information
+- `/api/product-batch` - Product batch operations
+- `/api/product-detail` - Product detail management
+- `/api/order-items` - Order item tracking
+
+**Special Endpoints**:
+- `POST /api/product-detail/process-batch` - Process a ProductBatch to create multiple ProductDetails (critical batch processing logic)
+
+**Response Format**:
+All endpoints return `ApiResponse<T>` with structure:
+```json
+{
+  "status": "SUCCESS" | "ERROR" | "SKIP_AS_GOOD",
+  "message": "Operation description",
+  "data": T | null
+}
+```
+
 ## Development Conventions
 
 ### Entity Timestamps
@@ -165,3 +209,51 @@ Frontend origins are configured in `WebConfig.java`. Add new origins there when 
 ## Testing
 
 Tests are located in `src/test/java`. The project uses Spring Boot Test dependencies for JPA and WebMVC testing.
+
+## Database Schema
+
+Database schema documentation is located in `db_scheme/README.md`. The service uses Hibernate with `ddl-auto: update` to automatically manage schema changes based on JPA entity definitions.
+
+**Database**: `product_storage_db`  
+**Connection**: PostgreSQL via JDBC URL configured in `application.yaml`
+
+## Configuration Files
+
+- `application.yaml` - Main Spring Boot configuration (datasource, JPA, server port, Kafka URL)
+- `.env` - Environment-specific variables (DB credentials, Kafka host, R2 credentials)
+- `.env.example` - Template for required environment variables
+
+The application uses Spring's `config.import: optional:file:.env[.properties]` to load `.env` files automatically.
+
+## Data Seeding
+
+The service includes a `DataSeeder` configuration class that automatically populates the database with sample Vietnamese fresh food data on first startup.
+
+**Seeded Data Includes**:
+- 3 warehouses (TP.HCM locations)
+- 8 storage tools (4 racks + 4 fridges) with appropriate temperature settings
+- 20 rack levels across multiple racks
+- 15 sub-subcategories (fruits, vegetables, meat, seafood, dairy)
+- 15 product generals (Vietnamese fresh food products)
+- 16 product batches with realistic expiry dates for fresh foods
+
+**Data Seeding Behavior**:
+- Only runs if `warehouseRepository.count() == 0` (empty database)
+- All entities use Vietnamese names and descriptions
+- Product batches have status `PENDING` (ready for batch processing)
+- Expiry dates are realistic for fresh food categories:
+  - Fruits: 5-10 days
+  - Vegetables: 3-7 days
+  - Fresh meat: 2-3 days
+  - Seafood: 1-2 days (fresh), 15-30 days (frozen)
+  - Dairy/Eggs: 5-15 days
+
+**To reset and re-seed**:
+```bash
+# Drop and recreate the database
+psql -U postgres -h localhost -p 5432 -c "DROP DATABASE product_storage_db;"
+psql -U postgres -h localhost -p 5432 -c "CREATE DATABASE product_storage_db;"
+
+# Restart the application to trigger seeding
+./mvnw spring-boot:run
+```
