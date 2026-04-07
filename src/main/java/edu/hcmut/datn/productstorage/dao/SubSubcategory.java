@@ -29,6 +29,9 @@ public class SubSubcategory {
     @Column(name = "icon_url")
     private String iconUrl;
     
+    @Column(name = "sub_category_id")
+    private Long subcategoryId;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     

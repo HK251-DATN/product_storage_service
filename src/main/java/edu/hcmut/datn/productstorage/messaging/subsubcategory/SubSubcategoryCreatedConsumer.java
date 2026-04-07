@@ -28,7 +28,7 @@ public class SubSubcategoryCreatedConsumer {
             subSubcategory.setName(event.name());
             subSubcategory.setDescription(event.description());
             subSubcategory.setIconUrl(event.iconUrl());
-            // Note: We don't store subcategoryId (parent reference) as we only need the finest detail
+            subSubcategory.setSubcategoryId(event.subcategoryId());
             
             // Save sub-subcategory
             subSubcategoryService.create(subSubcategory);
