@@ -17,6 +17,7 @@ public class OrderItem {
     
     @Id
     @Column(name = "order_item_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderItemId;
     
     @Column(name = "order_id")
@@ -25,14 +26,8 @@ public class OrderItem {
     @Column(name = "batch_detail_id")
     private Long batchDetailId;
     
-    @Column(name = "quantity")
-    private Long quantity;
-    
-    @Column(name = "unit_price_at_purchase")
-    private BigDecimal unitPriceAtPurchase;
-    
     @Column(name = "buyer_id")
-    private String buyerId;
+    private Long buyerId;
     
     @Column(name = "product_detail_id")
     private Long productDetailId;  // 1-to-1 relationship with ProductDetail
@@ -55,12 +50,10 @@ public class OrderItem {
     
     // Constructor for creating from event
     public OrderItem(Long orderItemId, Long orderId, Long batchDetailId, Long quantity,
-                     BigDecimal unitPriceAtPurchase, String buyerId) {
+                     BigDecimal unitPriceAtPurchase, Long buyerId) {
         this.orderItemId = orderItemId;
         this.orderId = orderId;
         this.batchDetailId = batchDetailId;
-        this.quantity = quantity;
-        this.unitPriceAtPurchase = unitPriceAtPurchase;
         this.buyerId = buyerId;
     }
 }
