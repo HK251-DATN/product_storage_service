@@ -9,5 +9,6 @@ public interface PickListService {
     void createPickList(OrderPickRequestedEvent event);
     List<OrderItem> getPickList(Long orderId);
     void linkOrderItem(Long orderItemId, Long productDetailId);
+    Integer getProductDetailCurrentQuantity(Long batchId);
 }
 

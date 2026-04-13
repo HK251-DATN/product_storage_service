@@ -3,6 +3,7 @@ package edu.hcmut.datn.productstorage.controller;
 import java.util.List;
 
 import edu.hcmut.datn.productstorage.dto.request.ProcessProductBatchRequest;
+import edu.hcmut.datn.productstorage.service.PickListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import lombok.AllArgsConstructor;
 public class ProductDetailController {
 
     private final ProductDetailService productDetailService;
+    private final PickListService pickListService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<ProductDetail>> create(@RequestBody ProductDetailCreateRequest request) {
@@ -118,6 +120,22 @@ public class ProductDetailController {
 
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Process batch successfully", newProductDetails));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+    
+    @GetMapping("/quantity/{batchId}")
+    public ResponseEntity<ApiResponse<Integer>> getProductDetailQuantity(
+            @PathVariable Long batchId
+    ) {
+        try {
+            Integer productDetailQuantity = pickListService.getProductDetailCurrentQuantity(batchId);
+            
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Get product detail quantity successfully", productDetailQuantity));
+            
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));

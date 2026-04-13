@@ -141,7 +141,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         
         // Publish event to ecommerce
         BatchDetailCreateEvent event = new BatchDetailCreateEvent(
-                (long) (Math.random() * 9999),
+                productBatch.getBatchId(),
                 productGeneral.getProdGenId(),
                 numOfProdDetail,
                 productDetail.getPrice(),

@@ -75,4 +75,9 @@ public class PickListServiceImpl implements PickListService {
                 new OrderPackagingProgressUpdateEvent(orderItem.getOrderId(), progress)
         );
     }
+    
+    @Override
+    public Integer getProductDetailCurrentQuantity (Long batchId) {
+        return productDetailRepository.countStoredProductDetailOfTheSameBatch(batchId);
+    }
 }
