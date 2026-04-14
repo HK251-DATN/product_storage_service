@@ -5,6 +5,9 @@ import edu.hcmut.datn.productstorage.messaging.orderpackagingprogress.OrderPacka
 import edu.hcmut.datn.productstorage.messaging.orderpackagingprogress.OrderPackagingProgressUpdateEventProducer;
 import edu.hcmut.datn.productstorage.messaging.orderpick.OrderPickRequestedEvent;
 import edu.hcmut.datn.productstorage.repository.OrderItemRepository;
+import edu.hcmut.datn.productstorage.repository.projector.PickListItem;
+import edu.hcmut.datn.productstorage.repository.projector.ProductDetailForPickItem;
+import edu.hcmut.datn.productstorage.service.OrderItemService;
 import edu.hcmut.datn.productstorage.service.PickListService;
 
 import edu.hcmut.datn.productstorage.common.enums.ProductStatus;
@@ -24,8 +27,11 @@ public class PickListServiceImpl implements PickListService {
 
     private final OrderItemRepository orderItemRepository;
     private final ProductDetailRepository productDetailRepository;
+    
     private final OrderPackagingProgressUpdateEventProducer orderPackagingProgressUpdateEventProducer;
 
+    private final OrderItemService orderItemService;
+    
     @Override
     public void createPickList(OrderPickRequestedEvent event) {
         List<OrderItem> orderItems = new ArrayList<>();
@@ -42,8 +48,8 @@ public class PickListServiceImpl implements PickListService {
     }
 
     @Override
-    public List<OrderItem> getPickList(Long orderId) {
-        return orderItemRepository.findByOrderId(orderId);
+    public List<PickListItem> getPickList(Long orderId) {
+        return orderItemRepository.findPickListItemByOrderId(orderId);
     }
 
     @Override
@@ -79,5 +85,12 @@ public class PickListServiceImpl implements PickListService {
     @Override
     public Integer getProductDetailCurrentQuantity (Long batchId) {
         return productDetailRepository.countStoredProductDetailOfTheSameBatch(batchId);
+    }
+    
+    @Override
+    public List<ProductDetailForPickItem> getProductDetailListForPickItem (Long orderItemId) {
+        OrderItem orderItem = orderItemService.read(orderItemId);
+        
+        return productDetailRepository.getProductDetailListForPickItem(orderItem.getBatchDetailId());
     }
 }
