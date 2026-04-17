@@ -29,6 +29,7 @@ public class SubSubcategoryCreatedConsumer {
             subSubcategory.setDescription(event.description());
             subSubcategory.setIconUrl(event.iconUrl());
             subSubcategory.setSubcategoryId(event.subcategoryId());
+            subSubcategory.setAvgShelfDays(event.avgShelfDays());
             
             // Save sub-subcategory
             subSubcategoryService.create(subSubcategory);

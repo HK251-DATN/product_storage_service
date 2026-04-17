@@ -93,61 +93,117 @@ public class DataSeeder {
             log.info("Seeded {} fridges", fridgeRepository.count());
                  
                     // Seed SubSubcategories (normally from Kafka, but seed for testing)
-            createSubSubcategory(1L, "Thịt Gà", "Thịt gà tươi nguyên con và các phần", null, 2L);
-            createSubSubcategory(2L, "Thịt Vịt", "Thịt vịt tươi nguyên con và các phần", null, 2L);
-            createSubSubcategory(3L, "Thịt Ngan", "Thịt ngan tươi", null, 2L);
-            createSubSubcategory(4L, "Thịt Chim Cút", "Chim cút tươi nguyên con", null, 2L);
-            createSubSubcategory(5L, "Lòng Gia Cầm", "Gan, mề, tim gia cầm tươi", null, 2L);
-            createSubSubcategory(6L, "Thịt Bò", "Thịt bò tươi các loại", null, 3L);
-            createSubSubcategory(7L, "Thịt Heo", "Thịt heo tươi các loại", null, 3L);
-            createSubSubcategory(8L, "Thịt Dê", "Thịt dê tươi", null, 3L);
-            createSubSubcategory(9L, "Thịt Cừu", "Thịt cừu tươi nhập khẩu", null, 3L);
-            createSubSubcategory(10L, "Xúc Xích Tươi", "Xúc xích tươi chưa qua chế biến", null, 3L);
-            createSubSubcategory(11L, "Tôm Tươi", "Tôm sú, tôm thẻ tươi sống", null, 4L);
-            createSubSubcategory(12L, "Cá Tươi", "Các loại cá tươi nguyên con và phi lê", null, 4L);
-            createSubSubcategory(13L, "Mực Tươi", "Mực ống, mực nang tươi", null, 4L);
-            createSubSubcategory(14L, "Cua Ghẹ", "Cua biển, ghẹ tươi sống", null, 4L);
-            createSubSubcategory(15L, "Nghêu Sò", "Nghêu, sò, hàu tươi", null, 4L);
-            createSubSubcategory(16L, "Rau Muống", "Rau muống tươi", null, 6L);
-            createSubSubcategory(17L, "Cải Xanh", "Cải xanh, cải ngọt tươi", null, 6L);
-            createSubSubcategory(18L, "Xà Lách", "Xà lách các loại tươi", null, 6L);
-            createSubSubcategory(19L, "Rau Dền", "Rau dền đỏ và rau dền xanh", null, 6L);
-            createSubSubcategory(20L, "Cải Thìa", "Cải thìa, cải bẹ trắng tươi", null, 6L);
-            createSubSubcategory(21L, "Cà Rốt", "Cà rốt tươi", null, 7L);
-            createSubSubcategory(22L, "Khoai Tây", "Khoai tây tươi", null, 7L);
-            createSubSubcategory(23L, "Củ Cải", "Củ cải trắng, củ cải đỏ tươi", null, 7L);
-            createSubSubcategory(24L, "Bắp", "Bắp ngô tươi các loại", null, 7L);
-            createSubSubcategory(25L, "Su Su", "Su su tươi", null, 7L);
-            createSubSubcategory(26L, "Xoài", "Xoài tươi các loại", null, 8L);
-            createSubSubcategory(27L, "Chuối", "Chuối tươi các loại", null, 8L);
-            createSubSubcategory(28L, "Dưa Hấu", "Dưa hấu tươi", null, 8L);
-            createSubSubcategory(29L, "Ổi", "Ổi tươi các loại", null, 8L);
-            createSubSubcategory(30L, "Thanh Long", "Thanh long ruột đỏ và ruột trắng", null, 8L);
-            createSubSubcategory(31L, "Hành Lá", "Hành lá tươi", null, 9L);
-            createSubSubcategory(32L, "Tỏi", "Tỏi tươi và tỏi khô", null, 9L);
-            createSubSubcategory(33L, "Gừng", "Gừng tươi", null, 9L);
-            createSubSubcategory(34L, "Ớt", "Ớt sừng, ớt hiểm tươi", null, 9L);
-            createSubSubcategory(35L, "Sả", "Sả tươi nguyên cây", null, 9L);
-            createSubSubcategory(36L, "Sữa Tươi Không Đường", "Sữa tươi tiệt trùng không đường", null, 11L);
-            createSubSubcategory(37L, "Sữa Tươi Có Đường", "Sữa tươi tiệt trùng có đường", null, 11L);
-            createSubSubcategory(38L, "Sữa Hữu Cơ", "Sữa tươi hữu cơ nguyên chất", null, 11L);
-            createSubSubcategory(39L, "Sữa Ít Béo", "Sữa tươi ít béo tách một phần kem", null, 11L);
-            createSubSubcategory(40L, "Sữa Tách Béo", "Sữa tươi tách hoàn toàn chất béo", null, 11L);
-            createSubSubcategory(41L, "Bơ Tươi", "Bơ động vật tươi các loại", null, 12L);
-            createSubSubcategory(42L, "Phô Mai", "Phô mai tươi và phô mai chế biến", null, 12L);
-            createSubSubcategory(43L, "Kem Tươi", "Kem tươi whipping cream", null, 12L);
-            createSubSubcategory(44L, "Sữa Chua", "Sữa chua ăn các loại", null, 12L);
-            createSubSubcategory(45L, "Sữa Đặc", "Sữa đặc có đường và không đường", null, 12L);
-            createSubSubcategory(46L, "Trứng Gà Công Nghiệp", "Trứng gà tươi công nghiệp", null, 13L);
-            createSubSubcategory(47L, "Trứng Gà Ta", "Trứng gà ta thả vườn", null, 13L);
-            createSubSubcategory(48L, "Trứng Vịt", "Trứng vịt tươi", null, 13L);
-            createSubSubcategory(49L, "Trứng Cút", "Trứng cút tươi", null, 13L);
-            createSubSubcategory(50L, "Trứng Vịt Lộn", "Trứng vịt lộn ấp sẵn", null, 13L);
-            createSubSubcategory(51L, "Sữa Đậu Nành", "Sữa đậu nành tươi nguyên chất", null, 14L);
-            createSubSubcategory(52L, "Sữa Hạt", "Sữa hạnh nhân, sữa óc chó, sữa hạt điều", null, 14L);
-            createSubSubcategory(53L, "Yaourt Uống", "Sữa chua uống các loại", null, 14L);
-            createSubSubcategory(54L, "Kefir", "Kefir lên men tự nhiên", null, 14L);
-            createSubSubcategory(55L, "Sữa Chua Uống Nha Đam", "Sữa chua uống kết hợp nha đam", null, 14L);
+//            createSubSubcategory(1L, "Thịt Gà", "Thịt gà tươi nguyên con và các phần", null, 2L);
+//            createSubSubcategory(2L, "Thịt Vịt", "Thịt vịt tươi nguyên con và các phần", null, 2L);
+//            createSubSubcategory(3L, "Thịt Ngan", "Thịt ngan tươi", null, 2L);
+//            createSubSubcategory(4L, "Thịt Chim Cút", "Chim cút tươi nguyên con", null, 2L);
+//            createSubSubcategory(5L, "Lòng Gia Cầm", "Gan, mề, tim gia cầm tươi", null, 2L);
+//            createSubSubcategory(6L, "Thịt Bò", "Thịt bò tươi các loại", null, 3L);
+//            createSubSubcategory(7L, "Thịt Heo", "Thịt heo tươi các loại", null, 3L);
+//            createSubSubcategory(8L, "Thịt Dê", "Thịt dê tươi", null, 3L);
+//            createSubSubcategory(9L, "Thịt Cừu", "Thịt cừu tươi nhập khẩu", null, 3L);
+//            createSubSubcategory(10L, "Xúc Xích Tươi", "Xúc xích tươi chưa qua chế biến", null, 3L);
+//            createSubSubcategory(11L, "Tôm Tươi", "Tôm sú, tôm thẻ tươi sống", null, 4L);
+//            createSubSubcategory(12L, "Cá Tươi", "Các loại cá tươi nguyên con và phi lê", null, 4L);
+//            createSubSubcategory(13L, "Mực Tươi", "Mực ống, mực nang tươi", null, 4L);
+//            createSubSubcategory(14L, "Cua Ghẹ", "Cua biển, ghẹ tươi sống", null, 4L);
+//            createSubSubcategory(15L, "Nghêu Sò", "Nghêu, sò, hàu tươi", null, 4L);
+//            createSubSubcategory(16L, "Rau Muống", "Rau muống tươi", null, 6L);
+//            createSubSubcategory(17L, "Cải Xanh", "Cải xanh, cải ngọt tươi", null, 6L);
+//            createSubSubcategory(18L, "Xà Lách", "Xà lách các loại tươi", null, 6L);
+//            createSubSubcategory(19L, "Rau Dền", "Rau dền đỏ và rau dền xanh", null, 6L);
+//            createSubSubcategory(20L, "Cải Thìa", "Cải thìa, cải bẹ trắng tươi", null, 6L);
+//            createSubSubcategory(21L, "Cà Rốt", "Cà rốt tươi", null, 7L);
+//            createSubSubcategory(22L, "Khoai Tây", "Khoai tây tươi", null, 7L);
+//            createSubSubcategory(23L, "Củ Cải", "Củ cải trắng, củ cải đỏ tươi", null, 7L);
+//            createSubSubcategory(24L, "Bắp", "Bắp ngô tươi các loại", null, 7L);
+//            createSubSubcategory(25L, "Su Su", "Su su tươi", null, 7L);
+//            createSubSubcategory(26L, "Xoài", "Xoài tươi các loại", null, 8L);
+//            createSubSubcategory(27L, "Chuối", "Chuối tươi các loại", null, 8L);
+//            createSubSubcategory(28L, "Dưa Hấu", "Dưa hấu tươi", null, 8L);
+//            createSubSubcategory(29L, "Ổi", "Ổi tươi các loại", null, 8L);
+//            createSubSubcategory(30L, "Thanh Long", "Thanh long ruột đỏ và ruột trắng", null, 8L);
+//            createSubSubcategory(31L, "Hành Lá", "Hành lá tươi", null, 9L);
+//            createSubSubcategory(32L, "Tỏi", "Tỏi tươi và tỏi khô", null, 9L);
+//            createSubSubcategory(33L, "Gừng", "Gừng tươi", null, 9L);
+//            createSubSubcategory(34L, "Ớt", "Ớt sừng, ớt hiểm tươi", null, 9L);
+//            createSubSubcategory(35L, "Sả", "Sả tươi nguyên cây", null, 9L);
+//            createSubSubcategory(36L, "Sữa Tươi Không Đường", "Sữa tươi tiệt trùng không đường", null, 11L);
+//            createSubSubcategory(37L, "Sữa Tươi Có Đường", "Sữa tươi tiệt trùng có đường", null, 11L);
+//            createSubSubcategory(38L, "Sữa Hữu Cơ", "Sữa tươi hữu cơ nguyên chất", null, 11L);
+//            createSubSubcategory(39L, "Sữa Ít Béo", "Sữa tươi ít béo tách một phần kem", null, 11L);
+//            createSubSubcategory(40L, "Sữa Tách Béo", "Sữa tươi tách hoàn toàn chất béo", null, 11L);
+//            createSubSubcategory(41L, "Bơ Tươi", "Bơ động vật tươi các loại", null, 12L);
+//            createSubSubcategory(42L, "Phô Mai", "Phô mai tươi và phô mai chế biến", null, 12L);
+//            createSubSubcategory(43L, "Kem Tươi", "Kem tươi whipping cream", null, 12L);
+//            createSubSubcategory(44L, "Sữa Chua", "Sữa chua ăn các loại", null, 12L);
+//            createSubSubcategory(45L, "Sữa Đặc", "Sữa đặc có đường và không đường", null, 12L);
+//            createSubSubcategory(46L, "Trứng Gà Công Nghiệp", "Trứng gà tươi công nghiệp", null, 13L);
+//            createSubSubcategory(47L, "Trứng Gà Ta", "Trứng gà ta thả vườn", null, 13L);
+//            createSubSubcategory(48L, "Trứng Vịt", "Trứng vịt tươi", null, 13L);
+//            createSubSubcategory(49L, "Trứng Cút", "Trứng cút tươi", null, 13L);
+//            createSubSubcategory(50L, "Trứng Vịt Lộn", "Trứng vịt lộn ấp sẵn", null, 13L);
+//            createSubSubcategory(51L, "Sữa Đậu Nành", "Sữa đậu nành tươi nguyên chất", null, 14L);
+//            createSubSubcategory(52L, "Sữa Hạt", "Sữa hạnh nhân, sữa óc chó, sữa hạt điều", null, 14L);
+//            createSubSubcategory(53L, "Yaourt Uống", "Sữa chua uống các loại", null, 14L);
+//            createSubSubcategory(54L, "Kefir", "Kefir lên men tự nhiên", null, 14L);
+//            createSubSubcategory(55L, "Sữa Chua Uống Nha Đam", "Sữa chua uống kết hợp nha đam", null, 14L);
+            
+            SubSubcategory chickenMeat = createSubSubcategory(1L, "Thịt Gà", "Thịt gà tươi nguyên con và các phần", null, 2L, 3);
+            SubSubcategory duckMeat = createSubSubcategory(2L, "Thịt Vịt", "Thịt vịt tươi nguyên con và các phần", null, 2L, 3);
+            SubSubcategory gooseMeat = createSubSubcategory(3L, "Thịt Ngan", "Thịt ngan tươi", null, 2L, 3);
+            SubSubcategory quailMeat = createSubSubcategory(4L, "Thịt Chim Cút", "Chim cút tươi nguyên con", null, 2L, 2);
+            SubSubcategory poultryOffal = createSubSubcategory(5L, "Lòng Gia Cầm", "Gan, mề, tim gia cầm tươi", null, 2L, 2);
+            SubSubcategory beefMeat = createSubSubcategory(6L, "Thịt Bò", "Thịt bò tươi các loại", null, 3L, 4);
+            SubSubcategory porkMeat = createSubSubcategory(7L, "Thịt Heo", "Thịt heo tươi các loại", null, 3L, 3);
+            SubSubcategory goatMeat = createSubSubcategory(8L, "Thịt Dê", "Thịt dê tươi", null, 3L, 3);
+            SubSubcategory lambMeat = createSubSubcategory(9L, "Thịt Cừu", "Thịt cừu tươi nhập khẩu", null, 3L, 4);
+            SubSubcategory freshSausage = createSubSubcategory(10L, "Xúc Xích Tươi", "Xúc xích tươi chưa qua chế biến", null, 3L, 3);
+            SubSubcategory freshShrimp = createSubSubcategory(11L, "Tôm Tươi", "Tôm sú, tôm thẻ tươi sống", null, 4L, 2);
+            SubSubcategory freshFish = createSubSubcategory(12L, "Cá Tươi", "Các loại cá tươi nguyên con và phi lê", null, 4L, 3);
+            SubSubcategory freshSquid = createSubSubcategory(13L, "Mực Tươi", "Mực ống, mực nang tươi", null, 4L, 2);
+            SubSubcategory freshCrab = createSubSubcategory(14L, "Cua Ghẹ", "Cua biển, ghẹ tươi sống", null, 4L, 2);
+            SubSubcategory freshClams = createSubSubcategory(15L, "Nghêu Sò", "Nghêu, sò, hàu tươi", null, 4L, 1);
+            SubSubcategory waterSpinach = createSubSubcategory(16L, "Rau Muống", "Rau muống tươi", null, 6L, 1);
+            SubSubcategory greenCabbage = createSubSubcategory(17L, "Cải Xanh", "Cải xanh, cải ngọt tươi", null, 6L, 3);
+            SubSubcategory lettuce = createSubSubcategory(18L, "Xà Lách", "Xà lách các loại tươi", null, 6L, 3);
+            SubSubcategory amaranth = createSubSubcategory(19L, "Rau Dền", "Rau dền đỏ và rau dền xanh", null, 6L, 2);
+            SubSubcategory mustardGreens = createSubSubcategory(20L, "Cải Thìa", "Cải thìa, cải bẹ trắng tươi", null, 6L, 2);
+            SubSubcategory carrot = createSubSubcategory(21L, "Cà Rốt", "Cà rốt tươi", null, 7L, 14);
+            SubSubcategory potato = createSubSubcategory(22L, "Khoai Tây", "Khoai tây tươi", null, 7L, 30);
+            SubSubcategory radish = createSubSubcategory(23L, "Củ Cải", "Củ cải trắng, củ cải đỏ tươi", null, 7L, 7);
+            SubSubcategory corn = createSubSubcategory(24L, "Bắp", "Bắp ngô tươi các loại", null, 7L, 3);
+            SubSubcategory chayote = createSubSubcategory(25L, "Su Su", "Su su tươi", null, 7L, 5);
+            SubSubcategory mango = createSubSubcategory(26L, "Xoài", "Xoài tươi các loại", null, 8L, 7);
+            SubSubcategory banana = createSubSubcategory(27L, "Chuối", "Chuối tươi các loại", null, 8L, 5);
+            SubSubcategory watermelon = createSubSubcategory(28L, "Dưa Hấu", "Dưa hấu tươi", null, 8L, 7);
+            SubSubcategory guava = createSubSubcategory(29L, "Ổi", "Ổi tươi các loại", null, 8L, 5);
+            SubSubcategory dragonFruit = createSubSubcategory(30L, "Thanh Long", "Thanh long ruột đỏ và ruột trắng", null, 8L, 7);
+            SubSubcategory greenOnion = createSubSubcategory(31L, "Hành Lá", "Hành lá tươi", null, 9L, 7);
+            SubSubcategory garlic = createSubSubcategory(32L, "Tỏi", "Tỏi tươi và tỏi khô", null, 9L, 30);
+            SubSubcategory ginger = createSubSubcategory(33L, "Gừng", "Gừng tươi", null, 9L, 14);
+            SubSubcategory chili = createSubSubcategory(34L, "Ớt", "Ớt sừng, ớt hiểm tươi", null, 9L, 7);
+            SubSubcategory lemongrass = createSubSubcategory(35L, "Sả", "Sả tươi nguyên cây", null, 9L, 7);
+            SubSubcategory freshMilkUnsweetened = createSubSubcategory(36L, "Sữa Tươi Không Đường", "Sữa tươi tiệt trùng không đường", null, 11L, 7);
+            SubSubcategory freshMilkSweetened = createSubSubcategory(37L, "Sữa Tươi Có Đường", "Sữa tươi tiệt trùng có đường", null, 11L, 7);
+            SubSubcategory organicMilk = createSubSubcategory(38L, "Sữa Hữu Cơ", "Sữa tươi hữu cơ nguyên chất", null, 11L, 7);
+            SubSubcategory lowFatMilk = createSubSubcategory(39L, "Sữa Ít Béo", "Sữa tươi ít béo tách một phần kem", null, 11L, 7);
+            SubSubcategory skimmedMilk = createSubSubcategory(40L, "Sữa Tách Béo", "Sữa tươi tách hoàn toàn chất béo", null, 11L, 7);
+            SubSubcategory freshButter = createSubSubcategory(41L, "Bơ Tươi", "Bơ động vật tươi các loại", null, 12L, 14);
+            SubSubcategory cheese = createSubSubcategory(42L, "Phô Mai", "Phô mai tươi và phô mai chế biến", null, 12L, 30);
+            SubSubcategory whippingCream = createSubSubcategory(43L, "Kem Tươi", "Kem tươi whipping cream", null, 12L, 7);
+            SubSubcategory yogurt = createSubSubcategory(44L, "Sữa Chua", "Sữa chua ăn các loại", null, 12L, 14);
+            SubSubcategory condensedMilk = createSubSubcategory(45L, "Sữa Đặc", "Sữa đặc có đường và không đường", null, 12L, 180);
+            SubSubcategory industrialEggs = createSubSubcategory(46L, "Trứng Gà Công Nghiệp", "Trứng gà tươi công nghiệp", null, 13L, 21);
+            SubSubcategory nativeChickenEggs = createSubSubcategory(47L, "Trứng Gà Ta", "Trứng gà ta thả vườn", null, 13L, 14);
+            SubSubcategory duckEggs = createSubSubcategory(48L, "Trứng Vịt", "Trứng vịt tươi", null, 13L, 14);
+            SubSubcategory quailEggs = createSubSubcategory(49L, "Trứng Cút", "Trứng cút tươi", null, 13L, 7);
+            SubSubcategory balutEggs = createSubSubcategory(50L, "Trứng Vịt Lộn", "Trứng vịt lộn ấp sẵn", null, 13L, 1);
+            SubSubcategory soybeanMilk = createSubSubcategory(51L, "Sữa Đậu Nành", "Sữa đậu nành tươi nguyên chất", null, 14L, 5);
+            SubSubcategory nutMilk = createSubSubcategory(52L, "Sữa Hạt", "Sữa hạnh nhân, sữa óc chó, sữa hạt điều", null, 14L, 7);
+            SubSubcategory drinkableYogurt = createSubSubcategory(53L, "Yaourt Uống", "Sữa chua uống các loại", null, 14L, 14);
+            SubSubcategory kefir = createSubSubcategory(54L, "Kefir", "Kefir lên men tự nhiên", null, 14L, 14);
+            SubSubcategory aloeVeraYogurt = createSubSubcategory(55L, "Sữa Chua Uống Nha Đam", "Sữa chua uống kết hợp nha đam", null, 14L, 14);
             
             log.info("Seeded {} sub-subcategories", subSubcategoryRepository.count());
 //            SubSubcategory tropicalFruits = createSubSubcategory(1L, "Trái Cây Nhiệt Đới", "Xoài, dứa, đu đủ", null);
@@ -348,109 +404,109 @@ public class DataSeeder {
 
             // Seed Product Batches - Fresh Food Stock with expiry dates
             // Thịt Gà (subSubcategoryId: 1)
-            createProductBatch(100L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 6, 0), LocalDateTime.of(2026, 4, 10, 23, 59), null, 1L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(100L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(chickenMeat.getAvgShelfDays()), null, chickenMeat.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Thịt Vịt (subSubcategoryId: 2)
-            createProductBatch(80L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 6, 30), LocalDateTime.of(2026, 4, 10, 23, 59), null, 2L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(80L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(duckMeat.getAvgShelfDays()), null, duckMeat.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Thịt Ngan (subSubcategoryId: 3)
-            createProductBatch(50L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 7, 0), LocalDateTime.of(2026, 4, 10, 23, 59), null, 3L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(50L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(gooseMeat.getAvgShelfDays()), null, gooseMeat.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Thịt Chim Cút (subSubcategoryId: 4)
-            createProductBatch(30L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 7, 30), LocalDateTime.of(2026, 4, 10, 23, 59), null, 4L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(30L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(quailMeat.getAvgShelfDays()), null, quailMeat.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Lòng Gia Cầm (subSubcategoryId: 5)
-            createProductBatch(25L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 8, 0), LocalDateTime.of(2026, 4, 9, 23, 59), null, 5L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(25L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(poultryOffal.getAvgShelfDays()), null, poultryOffal.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Thịt Bò (subSubcategoryId: 6)
-            createProductBatch(150L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 5, 30), LocalDateTime.of(2026, 4, 11, 23, 59), null, 6L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(150L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(beefMeat.getAvgShelfDays()), null, beefMeat.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Thịt Heo (subSubcategoryId: 7)
-            createProductBatch(200L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 5, 0), LocalDateTime.of(2026, 4, 11, 23, 59), null, 7L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(200L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(porkMeat.getAvgShelfDays()), null, porkMeat.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Thịt Dê (subSubcategoryId: 8)
-            createProductBatch(60L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 6, 0), LocalDateTime.of(2026, 4, 11, 23, 59), null, 8L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(60L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(goatMeat.getAvgShelfDays()), null, goatMeat.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Thịt Cừu (subSubcategoryId: 9)
-            createProductBatch(40L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 6, 30), LocalDateTime.of(2026, 4, 12, 23, 59), null, 9L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(40L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(lambMeat.getAvgShelfDays()), null, lambMeat.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Xúc Xích Tươi (subSubcategoryId: 10)
-            createProductBatch(50L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 7, 0), LocalDateTime.of(2026, 4, 11, 23, 59), null, 10L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(50L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(duckMeat.getAvgShelfDays()), null, 10L, ProductBatchProcessStatus.PENDING);
 
             // Tôm Tươi (subSubcategoryId: 11)
-            createProductBatch(80L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 4, 0), LocalDateTime.of(2026, 4, 9, 23, 59), null, 11L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(80L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(freshShrimp.getAvgShelfDays()), null, freshShrimp.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Cá Tươi (subSubcategoryId: 12)
-            createProductBatch(120L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 4, 30), LocalDateTime.of(2026, 4, 10, 23, 59), null, 12L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(120L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(freshFish.getAvgShelfDays()), null, freshFish.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Mực Tươi (subSubcategoryId: 13)
-            createProductBatch(60L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 4, 45), LocalDateTime.of(2026, 4, 9, 23, 59), null, 13L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(60L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(freshSquid.getAvgShelfDays()), null, freshSquid.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Cua Ghẹ (subSubcategoryId: 14)
-            createProductBatch(70L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 5, 0), LocalDateTime.of(2026, 4, 9, 23, 59), null, 14L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(70L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(freshCrab.getAvgShelfDays()), null, freshCrab.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Nghêu Sò (subSubcategoryId: 15)
-            createProductBatch(90L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 5, 15), LocalDateTime.of(2026, 4, 9, 23, 59), null, 15L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(90L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(freshClams.getAvgShelfDays()), null, freshClams.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Rau Muống (subSubcategoryId: 16)
-            createProductBatch(50L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 3, 0), LocalDateTime.of(2026, 4, 10, 23, 59), null, 16L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(50L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(waterSpinach.getAvgShelfDays()), null, waterSpinach.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Cải Xanh (subSubcategoryId: 17)
-            createProductBatch(60L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 3, 15), LocalDateTime.of(2026, 4, 10, 23, 59), null, 17L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(60L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(greenCabbage.getAvgShelfDays()), null, greenCabbage.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Xà Lách (subSubcategoryId: 18)
-            createProductBatch(40L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 3, 30), LocalDateTime.of(2026, 4, 11, 23, 59), null, 18L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(40L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(lettuce.getAvgShelfDays()), null, lettuce.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Rau Dền (subSubcategoryId: 19)
-            createProductBatch(45L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 3, 45), LocalDateTime.of(2026, 4, 10, 23, 59), null, 19L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(45L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(amaranth.getAvgShelfDays()), null, amaranth.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Cải Thìa (subSubcategoryId: 20)
-            createProductBatch(55L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 4, 0), LocalDateTime.of(2026, 4, 10, 23, 59), null, 20L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(55L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(mustardGreens.getAvgShelfDays()), null, mustardGreens.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Cà Rốt (subSubcategoryId: 21)
-            createProductBatch(100L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 2, 0), LocalDateTime.of(2026, 4, 15, 23, 59), null, 21L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(100L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(carrot.getAvgShelfDays()), null, carrot.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Khoai Tây (subSubcategoryId: 22)
-            createProductBatch(150L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 2, 30), LocalDateTime.of(2026, 4, 18, 23, 59), null, 22L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(150L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(potato.getAvgShelfDays()), null, potato.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Củ Cải (subSubcategoryId: 23)
-            createProductBatch(80L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 2, 45), LocalDateTime.of(2026, 4, 15, 23, 59), null, 23L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(80L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(radish.getAvgShelfDays()), null, radish.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Bắp (subSubcategoryId: 24)
-            createProductBatch(120L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 3, 0), LocalDateTime.of(2026, 4, 12, 23, 59), null, 24L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(120L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(corn.getAvgShelfDays()), null, corn.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Su Su (subSubcategoryId: 25)
-            createProductBatch(70L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 3, 15), LocalDateTime.of(2026, 4, 14, 23, 59), null, 25L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(70L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(chayote.getAvgShelfDays()), null, chayote.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Xoài (subSubcategoryId: 26)
-            createProductBatch(90L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 1, 0), LocalDateTime.of(2026, 4, 13, 23, 59), null, 26L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(90L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(mango.getAvgShelfDays()), null, mango.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Chuối (subSubcategoryId: 27)
-            createProductBatch(100L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 1, 30), LocalDateTime.of(2026, 4, 12, 23, 59), null, 27L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(100L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(banana.getAvgShelfDays()), null, banana.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Dưa Hấu (subSubcategoryId: 28)
-            createProductBatch(200L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 2, 0), LocalDateTime.of(2026, 4, 15, 23, 59), null, 28L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(200L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(watermelon.getAvgShelfDays()), null, watermelon.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Ổi (subSubcategoryId: 29)
-            createProductBatch(80L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 2, 30), LocalDateTime.of(2026, 4, 14, 23, 59), null, 29L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(80L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(guava.getAvgShelfDays()), null, guava.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Thanh Long (subSubcategoryId: 30)
-            createProductBatch(110L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 3, 0), LocalDateTime.of(2026, 4, 16, 23, 59), null, 30L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(110L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(dragonFruit.getAvgShelfDays()), null, dragonFruit.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Hành Lá (subSubcategoryId: 31)
-            createProductBatch(30L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 4, 0), LocalDateTime.of(2026, 4, 12, 23, 59), null, 31L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(30L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(greenOnion.getAvgShelfDays()), null, greenOnion.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Tỏi (subSubcategoryId: 32)
-            createProductBatch(40L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 4, 30), LocalDateTime.of(2026, 5, 8, 23, 59), null, 32L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(40L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(garlic.getAvgShelfDays()), null, garlic.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Gừng (subSubcategoryId: 33)
-            createProductBatch(35L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 5, 0), LocalDateTime.of(2026, 5, 8, 23, 59), null, 33L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(35L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(ginger.getAvgShelfDays()), null, ginger.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Ớt (subSubcategoryId: 34)
-            createProductBatch(25L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 5, 30), LocalDateTime.of(2026, 4, 15, 23, 59), null, 34L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(25L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(chili.getAvgShelfDays()), null, chili.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             // Sả (subSubcategoryId: 35)
-            createProductBatch(20L, Unit.KILOGRAM, LocalDateTime.of(2026, 4, 8, 6, 0), LocalDateTime.of(2026, 4, 18, 23, 59), null, 35L, ProductBatchProcessStatus.PENDING);
+            createProductBatch(20L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(lemongrass.getAvgShelfDays()), null, lemongrass.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
             log.info("Database seeding completed successfully!");
             log.info("Summary:");
@@ -491,13 +547,20 @@ public class DataSeeder {
         return fridgeRepository.save(fridge);
     }
 
-    private SubSubcategory createSubSubcategory(Long id, String name, String description, String iconUrl, Long subcategoryId) {
+    private SubSubcategory createSubSubcategory(
+            Long id,
+            String name,
+            String description,
+            String iconUrl,
+            Long subcategoryId,
+            Integer avgShelfDays) {
         SubSubcategory subSubcategory = new SubSubcategory();
         subSubcategory.setSubSubcategoryId(id);
         subSubcategory.setName(name);
         subSubcategory.setDescription(description);
         subSubcategory.setIconUrl(iconUrl);
         subSubcategory.setSubcategoryId(subcategoryId);
+        subSubcategory.setAvgShelfDays(avgShelfDays);
         return subSubcategoryRepository.save(subSubcategory);
     }
 

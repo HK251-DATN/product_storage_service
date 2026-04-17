@@ -5,5 +5,6 @@ public record SubSubcategoryCreatedEvent(
         String name,
         String description,
         String iconUrl,
-        Long subcategoryId
+        Long subcategoryId,
+        Integer avgShelfDays
 ) {}

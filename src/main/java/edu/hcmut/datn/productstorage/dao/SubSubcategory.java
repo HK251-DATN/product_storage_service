@@ -32,6 +32,9 @@ public class SubSubcategory {
     @Column(name = "sub_category_id")
     private Long subcategoryId;
     
+    @Column(name = "avg_shelf_days")
+    private Integer avgShelfDays;
+    
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
