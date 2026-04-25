@@ -1,3 +1,26 @@
 spring:
   application:
     name: productstorage
+
+  config:
+    import: optional:file:.env[.properties]
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/product_storage_db?stringtype=unspecified
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+server:
+  port: 9200
+
+app:
+  kafka-url:
+    ${KAFKA_HOST}:${KAFKA_PORT}

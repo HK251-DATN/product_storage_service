@@ -1,0 +1,8 @@
+# Dockerfile for pre-built JAR
+# Build the JAR locally first: ./mvnw clean package -DskipTests
+
+FROM eclipse-temurin:25
+WORKDIR /app
+COPY target/*.jar app.jar
+EXPOSE 9200
+ENTRYPOINT ["java","-jar","/app/app.jar"]
