@@ -108,15 +108,11 @@ public class ProductDetailController {
     @PostMapping("/process-batch")
     public ResponseEntity<ApiResponse<List<ProductDetail>>> processBatch(
             @RequestBody ProcessProductBatchRequest request
-            ) {
+    ) {
         try {
-            List<ProductDetail> newProductDetails = productDetailService.processProductBatch(
-                    request.toEntity()
-            );
+            List<ProductDetail> newProductDetails = productDetailService.processProductBatch(request.toEntity());
 
-            newProductDetails.forEach(productDetail -> {
-                log.info(productDetail.getProdDetailId().toString());
-            });
+            newProductDetails.forEach(productDetail -> log.info(productDetail.getProdDetailId().toString()));
 
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Process batch successfully", newProductDetails));

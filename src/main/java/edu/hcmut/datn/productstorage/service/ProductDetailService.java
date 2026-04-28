@@ -2,7 +2,6 @@ package edu.hcmut.datn.productstorage.service;
 
 import java.util.List;
 
-import edu.hcmut.datn.productstorage.common.enums.Unit;
 import edu.hcmut.datn.productstorage.dao.ProductDetail;
 
 public interface ProductDetailService {

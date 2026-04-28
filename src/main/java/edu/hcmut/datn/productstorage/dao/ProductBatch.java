@@ -1,6 +1,8 @@
 package edu.hcmut.datn.productstorage.dao;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
@@ -69,6 +71,13 @@ public class ProductBatch {
     @Setter
     @Getter
     private Long subSubcategoryId;
+
+    @ElementCollection
+    @CollectionTable(name = "product_batch_proof_images", joinColumns = @JoinColumn(name = "batch_id"))
+    @Column(name = "image_url")
+    @Setter
+    @Getter
+    private List<String> proofImageUrls = new ArrayList<>();
 
     public ProductBatch(Long quantity, Unit unit, String note, LocalDateTime receivedAt, LocalDateTime expiredAt, Long providerId, Long subSubcategoryId) {
 

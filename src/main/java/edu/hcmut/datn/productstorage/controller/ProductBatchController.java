@@ -3,6 +3,7 @@ package edu.hcmut.datn.productstorage.controller;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
 import edu.hcmut.datn.productstorage.dto.request.ProductBatchCreateRequest;
@@ -94,6 +96,37 @@ public class ProductBatchController {
 
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Delete productBatch successfully", null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/{productBatchId}/proof-images")
+    public ResponseEntity<ApiResponse<List<String>>> getProofImages(
+            @PathVariable Long productBatchId
+    ) {
+        try {
+            List<String> urls = productBatchService.getProofImages(productBatchId);
+
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Get proof images successfully", urls));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+
+    @PostMapping(value = "/{productBatchId}/proof-images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<ProductBatch>> uploadProofImages(
+            @PathVariable Long productBatchId,
+            @RequestParam("images") List<MultipartFile> images
+    ) {
+        try {
+            ProductBatch updated = productBatchService.uploadProofImages(productBatchId, images);
+
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Upload proof images successfully", updated));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));

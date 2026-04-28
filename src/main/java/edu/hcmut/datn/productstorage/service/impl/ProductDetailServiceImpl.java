@@ -31,7 +31,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Service
 public class ProductDetailServiceImpl implements ProductDetailService {
-    
+
     private final ProductDetailRepository productDetailRepository;
     private final ProductBatchRepository productBatchRepository;
     private final ProductBatchService productBatchService;
@@ -107,7 +107,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             productBatchRepository.save(productBatch);
             throw new ProductBatchExpiredException("Product batch has expired");
         }
-        
+
         // Validation: Check if subSubcategoryId matches
         if (!productBatch.getSubSubcategoryId().equals(productGeneral.getSubSubcategoryId())) {
             throw new SubSubcategoryMismatchException(
@@ -116,7 +116,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                             productGeneral.getSubSubcategoryId())
             );
         }
-        
+
         // Get unit and unitQuantity from ProductGeneral
         long numOfProdDetail = UnitConverter.splitBatch(
                 productBatch.getQuantity(),
@@ -124,13 +124,13 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 productGeneral.getUnitQuantity(),
                 productGeneral.getUnit()
         );
-        
+
         // Create product details
         ArrayList<ProductDetail> productDetails = new ArrayList<>();
         for (long i = 0; i < numOfProdDetail; i++) {
             productDetails.add(productDetail.copy());
         }
-        
+
         // Save all product details
         List<ProductDetail> savedProductDetails = productDetailRepository.saveAll(productDetails);
         productDetailRepository.flush();
@@ -138,7 +138,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         // Update ProductBatch status to PROCESSED
         productBatch.setProcessStatus(ProductBatchProcessStatus.PROCESSED);
         productBatchRepository.save(productBatch);
-        
+
         // Publish event to ecommerce
         BatchDetailCreateEvent event = new BatchDetailCreateEvent(
                 productBatch.getBatchId(),
@@ -149,9 +149,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 (long) 0,
                 ""
         );
-        
+
         batchDetailProducer.publishBatchDetailCreated(event);
-        
+
         return savedProductDetails;
     }
 }

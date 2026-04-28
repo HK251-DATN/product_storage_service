@@ -2,6 +2,8 @@ package edu.hcmut.datn.productstorage.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
 
 public interface ProductBatchService {
@@ -14,5 +16,9 @@ public interface ProductBatchService {
 
     ProductBatch update(Long fridgeId, ProductBatch fridge);
 
-    void delete(Long fridgeId);    
+    void delete(Long fridgeId);
+
+    ProductBatch uploadProofImages(Long batchId, List<MultipartFile> images);
+
+    List<String> getProofImages(Long batchId);
 }
