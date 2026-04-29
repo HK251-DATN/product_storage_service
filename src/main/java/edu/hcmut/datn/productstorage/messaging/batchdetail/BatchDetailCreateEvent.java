@@ -7,6 +7,9 @@ public record BatchDetailCreateEvent (
         Long price,
         Long avgRate,
         Long numRate,
-        String detailContent
+        String detailContent,
+        Long subBatchId,
+        String verificationType,
+        Long providerId
 ) {
 }

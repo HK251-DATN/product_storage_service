@@ -3,9 +3,8 @@ package edu.hcmut.datn.productstorage.dto.request;
 import java.time.LocalDateTime;
 
 import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
-import edu.hcmut.datn.productstorage.common.enums.ProviderVerificationType;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
-import edu.hcmut.datn.productstorage.dao.ProductBatch;
+import edu.hcmut.datn.productstorage.dao.ProductSubBatch;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductBatchCreateRequest {
+public class ProductSubBatchUpdateRequest {
 
     private Long quantity;
     private Unit unit;
@@ -22,17 +21,15 @@ public class ProductBatchCreateRequest {
     private LocalDateTime expiredAt;
     private Long providerId;
     private Long subSubcategoryId;
-    private ProductBatchProcessStatus processStatus;
-    private ProviderVerificationType verificationType;
+    private Long productBatchId;
     private Long rawProductDemandId;
+    private ProductBatchProcessStatus processStatus;
 
-    public ProductBatch toEntity() {
-        ProductBatch productBatch = new ProductBatch(quantity, unit, note, receivedAt, expiredAt, providerId, subSubcategoryId);
+    public ProductSubBatch toEntity() {
+        ProductSubBatch productSubBatch = new ProductSubBatch(quantity, unit, note, receivedAt, expiredAt, providerId, subSubcategoryId, productBatchId, rawProductDemandId);
         if (processStatus != null) {
-            productBatch.setProcessStatus(processStatus);
+            productSubBatch.setProcessStatus(processStatus);
         }
-        productBatch.setVerificationType(verificationType);
-        productBatch.setRawProductDemandId(rawProductDemandId);
-        return productBatch;
+        return productSubBatch;
     }
 }

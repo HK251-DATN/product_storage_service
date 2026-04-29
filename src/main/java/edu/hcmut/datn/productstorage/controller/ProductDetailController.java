@@ -2,7 +2,9 @@ package edu.hcmut.datn.productstorage.controller;
 
 import java.util.List;
 
+import edu.hcmut.datn.productstorage.dto.request.ProcessBatchRequest;
 import edu.hcmut.datn.productstorage.dto.request.ProcessProductBatchRequest;
+import edu.hcmut.datn.productstorage.dto.response.ProcessBatchResponse;
 import edu.hcmut.datn.productstorage.service.PickListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -121,7 +123,54 @@ public class ProductDetailController {
                     .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
         }
     }
-    
+
+    /**
+     * Process a ProductBatch into ProductDetails (V2 - UX/UI friendly)
+     *
+     * Automatically handles both CERTIFICATE and VIDEO verified batches:
+     * - CERTIFICATE: Creates product details with provider attribution
+     * - VIDEO: Distributes product details proportionally across sub-batches
+     *
+     * Request body example:
+     * {
+     *   "batchId": 1,
+     *   "productGeneralId": 5,
+     *   "price": 50000,
+     *   "storageToolId": 3,
+     *   "numOfStar": 0
+     * }
+     *
+     * Response includes detailed breakdown:
+     * - For CERTIFICATE: Shows provider ID and total units created
+     * - For VIDEO: Shows breakdown by sub-batch with provider IDs
+     */
+    @PostMapping("/process-batch-v2")
+    public ResponseEntity<ApiResponse<ProcessBatchResponse>> processBatchV2(
+            @RequestBody ProcessBatchRequest request
+    ) {
+        try {
+            ProcessBatchResponse response = productDetailService.processProductBatchV2(request);
+
+            log.info("Processed batch {} ({}): {} product details created",
+                    response.getBatchId(),
+                    response.getVerificationType(),
+                    response.getTotalProductDetailsCreated());
+
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(
+                            HttpStatus.OK.toString(),
+                            String.format("Batch processed successfully (%s verification): %d product details created",
+                                    response.getVerificationType(),
+                                    response.getTotalProductDetailsCreated()),
+                            response
+                    ));
+        } catch (Exception e) {
+            log.error("Error processing batch: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+
     @GetMapping("/quantity/{batchId}")
     public ResponseEntity<ApiResponse<Integer>> getProductDetailQuantity(
             @PathVariable Long batchId

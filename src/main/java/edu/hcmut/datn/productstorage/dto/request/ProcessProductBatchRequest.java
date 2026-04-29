@@ -16,8 +16,11 @@ public class ProcessProductBatchRequest {
     private Long storageToolId;
     private Long batchId;
     private Long prodGenId;
-    
+    private Long subBatchId;
+
     public ProductDetail toEntity() {
-        return new ProductDetail(status, price, numOfStar, storageToolId, batchId, prodGenId);
+        ProductDetail productDetail = new ProductDetail(status, price, numOfStar, storageToolId, batchId, prodGenId);
+        productDetail.setSubBatchId(subBatchId);
+        return productDetail;
     }
 }

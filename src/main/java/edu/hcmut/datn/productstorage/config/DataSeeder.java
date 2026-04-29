@@ -1,6 +1,8 @@
 package edu.hcmut.datn.productstorage.config;
 
 import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
+import edu.hcmut.datn.productstorage.common.enums.ProviderVerificationType;
+import edu.hcmut.datn.productstorage.common.enums.RawProductDemandStatus;
 import edu.hcmut.datn.productstorage.common.enums.StorageToolStatus;
 import edu.hcmut.datn.productstorage.common.enums.StorageType;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
@@ -28,6 +30,7 @@ public class DataSeeder {
     private final SubSubcategoryRepository subSubcategoryRepository;
     private final ProductGeneralRepository productGeneralRepository;
     private final ProductBatchRepository productBatchRepository;
+    private final RawProductDemandRepository rawProductDemandRepository;
 
     @Bean
     public CommandLineRunner seedData() {
@@ -508,6 +511,11 @@ public class DataSeeder {
             // Sả (subSubcategoryId: 35)
             createProductBatch(20L, Unit.KILOGRAM, LocalDateTime.now(), LocalDateTime.now().plusDays(lemongrass.getAvgShelfDays()), null, lemongrass.getSubSubcategoryId(), ProductBatchProcessStatus.PENDING);
 
+            // Seed RawProduct Demands
+            createRawProductDemand(porkMeat.getSubSubcategoryId(), Unit.KILOGRAM, 500L, 85000L, LocalDate.now().plusDays(7), "Cần thịt heo tươi cho tuần sau", RawProductDemandStatus.PENDING);
+            createRawProductDemand(beefMeat.getSubSubcategoryId(), Unit.KILOGRAM, 300L, 220000L, LocalDate.now().plusDays(10), "Cần thịt bò Úc loại 1", RawProductDemandStatus.PENDING);
+            createRawProductDemand(freshShrimp.getSubSubcategoryId(), Unit.KILOGRAM, 200L, 150000L, LocalDate.now().plusDays(5), "Cần tôm sú tươi size lớn", RawProductDemandStatus.PENDING);
+
             log.info("Database seeding completed successfully!");
             log.info("Summary:");
             log.info("  - {} warehouses with storage capacity", warehouseRepository.count());
@@ -516,6 +524,7 @@ public class DataSeeder {
             log.info("  - {} product categories ready for inventory", subSubcategoryRepository.count());
             log.info("  - {} product types available", productGeneralRepository.count());
             log.info("  - {} fresh batches ready to process", productBatchRepository.count());
+            log.info("  - {} raw product demands ready for fulfillment", rawProductDemandRepository.count());
         };
     }
 
@@ -581,7 +590,14 @@ public class DataSeeder {
                                            Long providerId, Long subSubcategoryId,
                                            ProductBatchProcessStatus processStatus) {
         ProductBatch batch = new ProductBatch(quantity, unit, "", receivedAt, expiredAt, providerId, subSubcategoryId);
+        batch.setVerificationType(ProviderVerificationType.CERTIFICATE);
         batch.setProcessStatus(processStatus);
         return productBatchRepository.save(batch);
+    }
+
+    private RawProductDemand createRawProductDemand(Long subSubcategoryId, Unit unit, Long unitQuantity, Long unitPrice, LocalDate dateNeed, String note, RawProductDemandStatus status) {
+        RawProductDemand demand = new RawProductDemand(subSubcategoryId, unit, unitQuantity, unitPrice, dateNeed, note);
+        demand.setStatus(status);
+        return rawProductDemandRepository.save(demand);
     }
 }

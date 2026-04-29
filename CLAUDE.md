@@ -103,20 +103,54 @@ Warehouse (address, usage_percentage, num_of_fridge, num_of_rack)
        └─ Fridge (temperature, humidity)
 ```
 
-**Product Hierarchy** (3-layer category system):
+**Product Hierarchy** (3-layer category system with provider verification tracking):
 ```
 SubSubcategory (name, description, icon_url, subcategory_id, avg_shelf_days)
   └─ ProductGeneral (prod_gen_id, name, img_url, description, unit, unit_quantity, subsubcategory_id)
-       └─ ProductBatch (quantity, unit, note, received_at, expired_at, provider_id, sub_subcategory_id, process_status)
-            └─ ProductDetail (status, price, num_of_star, storage_tool_id, batch_id, prod_gen_id)
-                 └─ OrderItem (order_item_id, order_id, batch_detail_id, buyer_id, product_detail_id)
+       ├─ ProductBatch (CERTIFICATE verified) - Uniquely owned by single certified provider
+       │    └─ ProductDetail (with provider attribution on ecommerce)
+       │
+       └─ ProductBatch (VIDEO verified) - Shared/pooled batch from multiple providers
+            └─ ProductSubBatch (individual provider deliveries, pooled together)
+                 └─ ProductDetail (without provider attribution on ecommerce)
+                      └─ OrderItem (order_item_id, order_id, batch_detail_id, buyer_id, product_detail_id)
 ```
+
+**Business Logic - Provider Verification & Product Traceability**:
+
+The system implements **two distinct workflows** based on provider verification type, affecting product traceability and ecommerce display:
+
+**CERTIFICATE-Verified Providers** (e.g., VietGAP, GlobalGAP):
+- **Purpose**: Premium products with full provider attribution for marketing
+- **Example**: Provider A (VietGAP certified) delivers 20kg "Thịt Heo" on 2026-04-29
+- **Data Structure**: ProductBatch (batch-of-A, 20kg) → 20 ProductDetails (1kg packs)
+- **Ecommerce Display**: "Thịt Heo 1kg - From Provider A (VietGAP Certified)"
+- **No ProductSubBatch needed** - batch is uniquely owned by one certified provider
+
+**VIDEO-Verified Providers** (no certificates):
+- **Purpose**: Pooled products from multiple providers, no individual attribution
+- **Example**: Provider B (20kg) + Provider C (10kg) both deliver "Thịt Heo" on 2026-04-29
+- **Data Structure**: 
+  - ProductBatch (batch-of-pig-1-20260429, VIDEO verified)
+    - ProductSubBatch (Provider B, 20kg) → 20 ProductDetails
+    - ProductSubBatch (Provider C, 10kg) → 10 ProductDetails
+  - Total: 30 ProductDetails all linked to shared batch
+- **Ecommerce Display**: "Thịt Heo 1kg" (no provider name - generic pooled product)
+- **ProductSubBatch required** - tracks individual provider contributions to shared batch
 
 **Key Relationships**:
 - SubSubcategory is created via Kafka events from back-office service, has `avg_shelf_days` for automatic expiry calculation
 - ProductGeneral and ProductBatch must have matching `sub_subcategory_id` (validated in batch processing)
-- ProductBatch has `process_status` enum: PENDING, PROCESSED, EXPIRED
-- ProductDetail references ProductGeneral, ProductBatch, and StorageTool; has `copy()` method for duplication
+- **ProductBatch verification_type determines batch structure**:
+  - `CERTIFICATE`: Single provider batch, no sub-batches, direct to ProductDetail (provider attribution shown)
+  - `VIDEO`: Shared/pooled batch, contains multiple ProductSubBatch from different providers (no provider attribution)
+- **ProductBatch with VIDEO verification can contain multiple ProductSubBatch entities** (1-to-N relationship via `product_batch_id`)
+- ProductBatch has `process_status` enum: WAIT_FOR_DELIVERY, PENDING, PROCESSED, EXPIRED, REJECTED
+- ProductSubBatch has `process_status` enum: WAIT_FOR_DELIVERY, PENDING, PROCESSED, EXPIRED, REJECTED
+- **ProductDetail references**:
+  - Certificate batches: Only `batch_id` (single provider attribution)
+  - Video batches: Both `batch_id` (pooled batch) and `sub_batch_id` (source provider)
+- ProductDetail also references ProductGeneral and StorageTool; has `copy()` method for duplication
 - OrderItem has 1-to-1 relationship with ProductDetail via `product_detail_id`
 - StorageTool belongs to Warehouse
 
@@ -142,10 +176,22 @@ SubSubcategory (name, description, icon_url, subcategory_id, avg_shelf_days)
 - `RETURNED` - Returned by customer
 - `DISPOSED` - Removed from inventory
 
-**ProductBatchProcessStatus** - Batch processing states:
+**ProductBatchProcessStatus** - Batch processing states (applies to both ProductBatch and ProductSubBatch):
+- `WAIT_FOR_DELIVERY` - Order placed, waiting for provider delivery
 - `PENDING` - Received, awaiting processing
 - `PROCESSED` - Converted to product details
 - `EXPIRED` - Past expiry date, cannot process
+- `REJECTED` - Delivery rejected by warehouse staff
+
+**ProviderVerificationType** - Provider verification method:
+- `CERTIFICATE` - Verified via certificate/documentation
+- `VIDEO` - Verified via video evidence
+
+**RawProductDemandStatus** - Raw product demand lifecycle states:
+- `PENDING` - Demand created, not yet fulfilled
+- `PARTIALLY_FULFILLED` - Some batches received, demand partially met
+- `FULFILLED` - All required batches received
+- `CANCELLED` - Demand cancelled
 
 **StorageType** - Storage tool types:
 - `RACK` - Shelf storage
@@ -166,11 +212,16 @@ SubSubcategory (name, description, icon_url, subcategory_id, avg_shelf_days)
 - `RackLevel` - Individual level within a rack
 - `Fridge` - Refrigerated storage tool with temperature control
 
-**Product Entities** (product catalog and inventory):
+**Product Entities** (product catalog and inventory with provider verification):
 - `SubSubcategory` - Finest category granularity (e.g., "Thịt Gà", "Rau Muống")
 - `ProductGeneral` - General product information (e.g., "Gà Ta Nguyên Con")
-- `ProductBatch` - Bulk quantity received from suppliers
-- `ProductDetail` - Individual sellable product units
+- `ProductBatch` - Batch entity representing received product from provider(s):
+  - **CERTIFICATE verified**: Uniquely owned by single certified provider (e.g., VietGAP) - products show provider name on ecommerce
+  - **VIDEO verified**: Shared/pooled batch from multiple providers - products shown without provider attribution
+- `ProductSubBatch` - Individual provider deliveries for VIDEO-verified batches only (e.g., Provider B: 20kg + Provider C: 10kg → pooled into one ProductBatch)
+- `ProductDetail` - Individual sellable product units:
+  - From CERTIFICATE batch: Direct from ProductBatch, has provider attribution
+  - From VIDEO batch: Created from ProductSubBatch, no provider attribution shown
 
 **Order Fulfillment Entities**:
 - `OrderItem` - Order items linked to product details
@@ -197,34 +248,84 @@ SubSubcategory (name, description, icon_url, subcategory_id, avg_shelf_days)
 
 Consumer pattern: `@KafkaListener` on topic → Service method call → Exception handling with logging
 
-**Event Flow Example**:
+**Event Flow Examples**:
+
+**Certificate-Verified Provider Flow** (Provider A with VietGAP):
 1. Back-office service publishes `subsubcategory-events` and `product-general-events`
 2. Product storage service consumes and creates local entities
-3. Warehouse staff processes ProductBatch → creates ProductDetails
-4. Service publishes `batch-detail-events` to ecommerce service
-5. Ecommerce service publishes `order-pick-requested-events` when order is confirmed
-6. Product storage service creates pick list and updates packaging progress via `order-packaging-progress-update-events`
+3. Provider A delivers 20kg "Thịt Heo" → Warehouse staff creates ProductBatch with verification_type=CERTIFICATE
+4. Warehouse staff processes ProductBatch → creates 20 ProductDetails (1kg packs)
+5. Service publishes `batch-detail-events` to ecommerce service
+6. **Ecommerce displays**: "Thịt Heo 1kg - From Provider A (VietGAP Certified)"
+
+**Video-Verified Provider Flow** (Provider B + C without certificates):
+1. Back-office service publishes `subsubcategory-events` and `product-general-events`
+2. Product storage service consumes and creates local entities
+3. Create shared ProductBatch "batch-of-pig-1-20260429" with verification_type=VIDEO
+4. Provider B delivers 20kg → Create ProductSubBatch, upload video, accept delivery
+5. Provider C delivers 10kg → Create ProductSubBatch, upload video, accept delivery
+6. Warehouse staff processes both ProductSubBatch entities → creates 30 ProductDetails (1kg packs) total
+7. Service publishes `batch-detail-events` to ecommerce service
+8. **Ecommerce displays**: "Thịt Heo 1kg" (no provider attribution - pooled product)
+
+**Order Fulfillment Flow** (both types):
+1. Ecommerce service publishes `order-pick-requested-events` when order is confirmed
+2. Product storage service creates pick list and updates packaging progress via `order-packaging-progress-update-events`
 
 ### Batch Processing Logic
 
-The `ProductDetailService.processProductBatch()` method implements critical business logic:
+**Provider Verification-Based Workflows**:
 
-1. **Validates ProductBatch**:
-   - Checks `process_status` is PENDING (throws ProductBatchAlreadyProcessedException if PROCESSED)
-   - Validates not expired (throws ProductBatchExpiredException if past expiry date)
-   - Ensures ProductGeneral and ProductBatch have matching `sub_subcategory_id` (throws SubSubcategoryMismatchException)
-2. **Unit Conversion**: Uses `UnitConverter.splitBatch()` to calculate how many ProductDetails can be created
-   - Supports MASS (kg, g) and VOLUME (L, mL) with automatic conversion
-   - Example: 10kg batch + 500g package = 20 ProductDetail instances
-3. **Creates ProductDetails**: Generates multiple ProductDetail instances with AVAILABLE status
-4. **Updates ProductBatch**: Sets `process_status = PROCESSED`
-5. **Publishes Event**: Sends `BatchDetailCreateEvent` to Kafka topic `batch-detail-events` for ecommerce service
-6. **Auto-calculates Expiry**: Uses `avg_shelf_days` from SubSubcategory to set batch expiry date
+The system handles two distinct workflows based on provider verification type:
 
-**ProductBatchProcessStatus Enum**:
-- `PENDING` - Batch received, not yet processed into product details
-- `PROCESSED` - Batch successfully converted to product details
-- `EXPIRED` - Batch past expiry date, cannot be processed
+#### 1. CERTIFICATE-Verified Providers (e.g., VietGAP, GlobalGAP)
+**Example**: Provider A with VietGAP certificate delivers 20kg of "Thịt Heo"
+
+**Workflow**:
+1. Create ProductBatch directly with `verification_type = CERTIFICATE`, `provider_id = A`
+2. **No ProductSubBatch needed** - batch is uniquely owned by the certified provider
+3. Process ProductBatch → creates 20 ProductDetails (1kg packs)
+4. ProductDetails reference only `batch_id` (no `sub_batch_id`)
+5. **Ecommerce display**: Products shown with provider attribution (e.g., "From Provider A - VietGAP Certified")
+
+#### 2. VIDEO-Verified Providers (no certificates)
+**Example**: Provider B (20kg) and Provider C (10kg) both deliver "Thịt Heo" on 2026-04-29
+
+**Workflow**:
+1. Create shared ProductBatch: `batch-of-pig-1-20260429` with `verification_type = VIDEO`
+2. Create ProductSubBatch for Provider B: 20kg, `product_batch_id = batch-of-pig-1-20260429`
+3. Create ProductSubBatch for Provider C: 10kg, `product_batch_id = batch-of-pig-1-20260429`
+4. Warehouse staff accepts/rejects each delivery independently via ProductSubBatchService
+5. Process each ProductSubBatch → creates ProductDetails:
+   - 20 ProductDetails from Provider B's sub-batch (1kg packs)
+   - 10 ProductDetails from Provider C's sub-batch (1kg packs)
+   - Total: 30 ProductDetails all linked to `batch-of-pig-1-20260429`
+6. ProductDetails reference both `batch_id` (shared batch) and `sub_batch_id` (source provider)
+7. **Ecommerce display**: Products shown without provider attribution (pooled product)
+
+**Delivery Acceptance Workflow** (ProductSubBatchService - VIDEO batches only):
+- `acceptDelivery(subBatchId, actualQuantity, note)` - Accept delivery, update quantity to actual received, set status to PENDING
+- `rejectDelivery(subBatchId, note)` - Reject delivery, set status to REJECTED
+- `uploadProofImages(subBatchId, images)` - Upload video proof for verification
+- `findByProductBatchId(batchId)` - Get all sub-batches for a shared batch
+
+**Product Detail Creation** (ProductDetailService.processProductBatch()):
+
+**For CERTIFICATE batches** - Process ProductBatch directly:
+1. Validates ProductBatch: process_status = PENDING, not expired, matching sub_subcategory_id
+2. Unit conversion: Calculate ProductDetails (e.g., 20kg batch ÷ 1kg pack = 20 units)
+3. Creates ProductDetails with only `batch_id` reference (provider attribution)
+4. Updates ProductBatch: Sets `process_status = PROCESSED`
+5. Publishes `BatchDetailCreateEvent` to Kafka
+
+**For VIDEO batches** - Process ProductSubBatch:
+1. Validates ProductSubBatch: process_status = PENDING, not expired, matching sub_subcategory_id
+2. Unit conversion: Calculate ProductDetails (e.g., 20kg sub-batch ÷ 1kg pack = 20 units)
+3. Creates ProductDetails with both `batch_id` (shared) and `sub_batch_id` (source provider)
+4. Updates ProductSubBatch: Sets `process_status = PROCESSED`
+5. Publishes `BatchDetailCreateEvent` to Kafka
+
+**Auto-calculates Expiry**: Uses `avg_shelf_days` from SubSubcategory to set batch/sub-batch expiry date
 
 ### Service Layer Patterns
 
@@ -235,7 +336,8 @@ The `ProductDetailService.processProductBatch()` method implements critical busi
 - RackLevelService - Rack level CRUD operations
 - FridgeService - Fridge-specific CRUD operations
 - ProductGeneralService - Product general CRUD + `getSuitableForBatch()`
-- ProductBatchService - Product batch CRUD operations
+- ProductBatchService - Product batch CRUD operations (parent batch entity)
+- **ProductSubBatchService** - Product sub-batch CRUD + delivery acceptance/rejection + proof image uploads
 - ProductDetailService - Product detail CRUD + `processProductBatch()`
 - SubSubcategoryService - SubSubcategory CRUD (no REST controller, Kafka-only)
 - OrderItemService - Order item tracking
@@ -255,8 +357,18 @@ Service implementations are in `service.impl.*ServiceImpl` and use constructor i
 **ProductGeneralService**:
 - `getSuitableForBatch(Long batchId)` - Returns Product Generals that match a batch's category and have compatible units. Used for filtering product options when processing a batch.
 
+**ProductSubBatchService** (VIDEO-verified batches only):
+- `findByProductBatchId(Long productBatchId)` - Get all sub-batches for a shared/pooled ProductBatch
+- `acceptDelivery(Long subBatchId, Long actualQuantity, String note)` - Accept delivery from provider, update quantity to actual received, set status to PENDING
+- `rejectDelivery(Long subBatchId, String note)` - Reject delivery from provider, set status to REJECTED
+- `uploadProofImages(Long subBatchId, List<MultipartFile> images)` - Upload video proof for verification
+- `getProofImages(Long subBatchId)` - Retrieve proof video URLs for a sub-batch
+
 **ProductDetailService**:
 - `processProductBatch(ProcessProductBatchRequest)` - Core batch processing logic (see Batch Processing Logic section)
+- **Two workflows based on verification_type**:
+  - CERTIFICATE batches: Processes ProductBatch directly, sets only `batch_id` (provider attribution)
+  - VIDEO batches: Processes ProductSubBatch, sets both `batch_id` (shared) and `sub_batch_id` (source provider)
 - Uses `ProductDetail.copy()` method to duplicate product details efficiently
 
 **OrderItemService**:
@@ -285,14 +397,32 @@ All controllers follow a standard REST pattern with base path `/api/{resource}`:
 - `/api/rack-level` - Rack level management
 - `/api/fridge` - Fridge-specific operations
 - `/api/product-general` - Product general information
-- `/api/product-batch` - Product batch operations
+- `/api/product-batch` - Product batch operations (parent batch entity)
+- **`/api/product-sub-batch`** - Product sub-batch operations (individual deliveries)
 - `/api/product-detail` - Product detail management
 - `/api/order-items` - Order item tracking
 - `/api/pick-list` - Pick list management (no CRUD, specialized endpoints)
 
 **Special Endpoints**:
-- `POST /api/product-detail/process-batch` - Process a ProductBatch to create multiple ProductDetails (critical batch processing logic)
+
+**ProductSubBatch Endpoints** (VIDEO-verified batches only):
+- `GET /api/product-sub-batch/by-batch/{batchId}` - Get all sub-batches for a shared/pooled ProductBatch
+- `GET /api/product-sub-batch/{subBatchId}/proof-images` - Get proof videos for a sub-batch
+- `POST /api/product-sub-batch/{subBatchId}/proof-images` - Upload proof videos (multipart/form-data)
+- `POST /api/product-sub-batch/{subBatchId}/accept-delivery` - Accept delivery from provider (body: {actualQuantity, note})
+- `POST /api/product-sub-batch/{subBatchId}/reject-delivery` - Reject delivery from provider (body: {note})
+
+**ProductDetail Endpoints**:
+- `POST /api/product-detail/process-batch` - Legacy batch processing endpoint (deprecated, use process-batch-v2)
+- **`POST /api/product-detail/process-batch-v2`** - **Recommended** UX/UI friendly batch processing endpoint:
+  - **Automatically detects** CERTIFICATE vs VIDEO verification
+  - **CERTIFICATE batch**: Creates product details with provider attribution, publishes event with provider info
+  - **VIDEO batch**: Distributes product details proportionally across sub-batches, publishes event without provider info
+  - **Request**: `{batchId, productGeneralId, price, storageToolId, numOfStar?}`
+  - **Response**: Detailed breakdown with verification type, total created, and sub-batch distribution (for VIDEO)
 - `GET /api/product-detail/quantity/{batchId}` - Get current quantity of available product details for a batch
+
+**PickList Endpoints**:
 - `GET /api/pick-list/{orderId}` - Get pick list for an order (returns List<PickListItem>)
 - `PUT /api/pick-list/{orderItemId}/link/{productDetailId}` - Link an order item to a specific product detail
 - `GET /api/pick-list/product-detail-list/{orderItemId}` - Get available product details for picking an order item
@@ -336,11 +466,12 @@ All entities use `@PrePersist` and `@PreUpdate` callbacks to auto-manage `create
 Custom exceptions follow naming pattern: `{Entity}NotFoundException`, `{Entity}AlreadyExistsException`. 
 
 **Available Exceptions**:
-- `*NotFoundException` - Entity not found (Warehouse, StorageTool, Rack, RackLevel, Fridge, ProductGeneral, ProductBatch, ProductDetail)
+- `*NotFoundException` - Entity not found (Warehouse, StorageTool, Rack, RackLevel, Fridge, ProductGeneral, ProductBatch, **ProductSubBatch**, ProductDetail)
 - `*AlreadyExistsException` - Duplicate entity creation attempt
-- `SubSubcategoryMismatchException` - ProductGeneral and ProductBatch have different sub_subcategory_id
-- `ProductBatchExpiredException` - Attempting to process an expired batch
+- `SubSubcategoryMismatchException` - ProductGeneral and ProductSubBatch have different sub_subcategory_id
+- `ProductBatchExpiredException` - Attempting to process an expired sub-batch
 - `ProductBatchAlreadyProcessedException` - Attempting to reprocess an already processed batch
+- `ProductSubBatchAlreadyProcessedException` - Attempting to reprocess an already processed sub-batch
 
 All exceptions are thrown from service layer, not repositories.
 
@@ -350,14 +481,44 @@ Entities use selective `@Getter`/`@Setter` annotations rather than class-level t
 ### Entity-Specific Features
 
 **ProductDetail**:
+- Individual sellable product unit (e.g., 1kg pack of "Thịt Heo")
 - Has `copy()` method for efficient duplication during batch processing
 - Auto-manages `created_at` and `updated_at` timestamps via `@PrePersist` and `@PreUpdate`
-- Status enum: `ProductStatus` (AVAILABLE, SOLD, RESERVED, DAMAGED, etc.)
+- Status enum: `ProductStatus` (STORED, EXPIRED, PICKED, IN_TRANSIT, DELIVERED, RETURNED, DISPOSED)
+- **References depend on source batch type**:
+  - **From CERTIFICATE batch**: Only `batch_id` set, `sub_batch_id` is null
+    - Example: 20 packs from Provider A (VietGAP) → all reference batch-of-A, displayed with "Provider A" on ecommerce
+  - **From VIDEO batch**: Both `batch_id` (shared batch) and `sub_batch_id` (source provider) set
+    - Example: 30 packs from batch-of-pig-1-20260429 (Provider B + C) → displayed without provider name
 
 **ProductBatch**:
-- Has `process_status` field: PENDING (default), PROCESSED, EXPIRED
+- Represents product batch from provider(s) with two distinct use cases:
+  - **CERTIFICATE verified**: Uniquely owned by single certified provider (e.g., Provider A with VietGAP)
+    - Processed directly into ProductDetails (no sub-batches)
+    - Products displayed with provider attribution on ecommerce
+  - **VIDEO verified**: Shared/pooled batch from multiple providers (e.g., Provider B + C)
+    - Contains multiple ProductSubBatch entities (1-to-N relationship)
+    - Products displayed without provider attribution (pooled)
+- Has `process_status` field: WAIT_FOR_DELIVERY, PENDING, PROCESSED, EXPIRED, REJECTED
 - Auto-initializes to PENDING in constructor
+- Has `verification_type`: CERTIFICATE (single provider) or VIDEO (pooled providers)
+- Contains `provider_id`: Set for CERTIFICATE batches, null/generic for VIDEO batches
 - Contains `sub_subcategory_id` for validation against ProductGeneral
+- Tracks `raw_product_demand_id` for linking to demand management
+- Contains `proof_image_urls` collection for verification (certificate documents or video evidence)
+
+**ProductSubBatch** (VIDEO-verified batches only):
+- Represents individual provider delivery within a shared/pooled ProductBatch
+- **Only used for VIDEO-verified batches** - allows multiple providers to contribute to one batch
+- Example: Provider B delivers 20kg + Provider C delivers 10kg → both become sub-batches of "batch-of-pig-1-20260429"
+- Has `process_status` field: WAIT_FOR_DELIVERY, PENDING, PROCESSED, EXPIRED, REJECTED
+- Auto-initializes to PENDING in constructor
+- Contains `product_batch_id` to reference parent ProductBatch (shared batch)
+- Contains `provider_id` to track which provider delivered this sub-batch
+- Contains `sub_subcategory_id` for validation against ProductGeneral
+- Tracks `raw_product_demand_id` for linking to demand management
+- Contains `proof_image_urls` collection for video verification
+- **Gets processed into ProductDetails** (each sub-batch processed independently)
 
 **SubSubcategory**:
 - Created only via Kafka events (no REST controller)
@@ -372,14 +533,15 @@ Entities use selective `@Getter`/`@Setter` annotations rather than class-level t
 
 **ProductGeneral**:
 - Manually assigned `prod_gen_id` (not auto-generated) - ID comes from back-office service
-- Must have matching `sub_subcategory_id` with ProductBatch for processing
+- Must have matching `sub_subcategory_id` with ProductSubBatch for processing
 
 ### CORS Configuration
 Frontend origins are configured in `WebConfig.java`. Add new origins there when deploying to new environments.
 
 ### Primary Keys
-- ProductGeneral uses manually assigned IDs (`@Id` without `@GeneratedValue`)
-- Most other entities use `@GeneratedValue(strategy = GenerationType.IDENTITY)` for auto-increment
+- ProductGeneral uses manually assigned IDs (`@Id` without `@GeneratedValue`) - ID comes from back-office service
+- SubSubcategory uses manually assigned IDs (`@Id` without `@GeneratedValue`) - ID comes from back-office service
+- ProductBatch, ProductSubBatch, ProductDetail, and other entities use `@GeneratedValue(strategy = GenerationType.IDENTITY)` for auto-increment
 
 ## Testing
 

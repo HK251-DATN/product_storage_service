@@ -6,17 +6,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
+import edu.hcmut.datn.productstorage.dto.request.DeliveryAcceptanceRequest;
 import edu.hcmut.datn.productstorage.dto.request.ProductBatchCreateRequest;
 import edu.hcmut.datn.productstorage.dto.request.ProductBatchUpdateRequest;
 import edu.hcmut.datn.productstorage.dto.response.ApiResponse;
@@ -34,7 +29,6 @@ public class ProductBatchController {
     public ResponseEntity<ApiResponse<ProductBatch>> create(@RequestBody ProductBatchCreateRequest request) {
         try {
             ProductBatch newProductBatch = productBatchService.create(request.toEntity());
-
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Create productBatch successfully", newProductBatch));
         } catch (Exception e) {
@@ -47,7 +41,6 @@ public class ProductBatchController {
     public ResponseEntity<ApiResponse<ProductBatch>> read(@PathVariable Long productBatchId) {
         try {
             ProductBatch newProductBatch = productBatchService.read(productBatchId);
-
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Read productBatch successfully", newProductBatch));
         } catch (Exception e) {
@@ -62,11 +55,9 @@ public class ProductBatchController {
             @RequestParam(defaultValue = "20") Integer pageSize
     ) {
         List<ProductBatch> productBatchs = productBatchService.readAll(pageNum, pageSize);
-
         if (productBatchs.isEmpty()) {
             return ResponseEntity.ok().body(ApiResponse.SKIP_AS_GOOD(HttpStatus.OK.toString(), "No productBatch exists", null));
         }
-
         return ResponseEntity.ok()
                 .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Get all productBatchs successfully", productBatchs));
     }
@@ -78,7 +69,6 @@ public class ProductBatchController {
     ) {
         try {
             ProductBatch newProductBatch = productBatchService.update(productBatchId, request.toEntity());
-
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Update productBatch successfully", newProductBatch));
         } catch (Exception e) {
@@ -93,7 +83,6 @@ public class ProductBatchController {
     ) {
         try {
             productBatchService.delete(productBatchId);
-
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Delete productBatch successfully", null));
         } catch (Exception e) {
@@ -108,7 +97,6 @@ public class ProductBatchController {
     ) {
         try {
             List<String> urls = productBatchService.getProofImages(productBatchId);
-
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Get proof images successfully", urls));
         } catch (Exception e) {
@@ -124,9 +112,54 @@ public class ProductBatchController {
     ) {
         try {
             ProductBatch updated = productBatchService.uploadProofImages(productBatchId, images);
-
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Upload proof images successfully", updated));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+
+    @GetMapping("/status/{status}")
+    public ResponseEntity<ApiResponse<List<ProductBatch>>> findByProcessStatus(@PathVariable ProductBatchProcessStatus status) {
+        try {
+            List<ProductBatch> batches = productBatchService.findByProcessStatus(status);
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Batches retrieved by status", batches));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/{productBatchId}/accept-delivery")
+    public ResponseEntity<ApiResponse<ProductBatch>> acceptDelivery(
+            @PathVariable Long productBatchId,
+            @RequestBody DeliveryAcceptanceRequest request
+    ) {
+        try {
+            if (request.getActualQuantity() == null) {
+                return ResponseEntity.badRequest()
+                        .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), "actualQuantity is required", null));
+            }
+            ProductBatch accepted = productBatchService.acceptDelivery(productBatchId, request.getActualQuantity(), request.getNote());
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Delivery accepted", accepted));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/{productBatchId}/reject-delivery")
+    public ResponseEntity<ApiResponse<ProductBatch>> rejectDelivery(
+            @PathVariable Long productBatchId,
+            @RequestBody DeliveryAcceptanceRequest request
+    ) {
+        try {
+            ProductBatch rejected = productBatchService.rejectDelivery(productBatchId, request.getNote());
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Delivery rejected", rejected));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
