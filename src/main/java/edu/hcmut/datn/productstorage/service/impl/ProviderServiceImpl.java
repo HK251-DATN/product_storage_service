@@ -23,4 +23,21 @@ public class ProviderServiceImpl implements ProviderService {
         return providerRepository.findById(providerId)
                 .orElseThrow(() -> new ProviderNotFoundException("Provider not found with id: " + providerId));
     }
+    
+    @Override
+    public Provider update (Long providerId, Provider provider) {
+        Provider curProvider = read(providerId);
+        
+        if (provider.getCertificateType() != null) {
+            curProvider.setCertificateType(provider.getCertificateType());
+        }
+        if (provider.getVerificationMethod() != null) {
+            curProvider.setVerificationMethod(provider.getVerificationMethod());
+        }
+        if (provider.getVerificationStatus() != null) {
+            curProvider.setVerificationStatus(provider.getVerificationStatus());
+        }
+        
+        return providerRepository.save(curProvider);
+    }
 }

@@ -9,7 +9,9 @@ public record BatchDetailCreateEvent (
         Long numRate,
         String detailContent,
         Long subBatchId,
-        String verificationType,
-        Long providerId
+        String verificationType,  // CERTIFICATE or VIDEO
+        String certificateType,   // VIETGAP, GLOBALGAP, etc. (null for VIDEO)
+        Long providerId,
+        String logoUrl  // Provider logo URL (null for VIDEO)
 ) {
 }

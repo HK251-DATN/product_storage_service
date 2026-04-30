@@ -2,7 +2,9 @@ package edu.hcmut.datn.productstorage.dao;
 
 import java.time.LocalDateTime;
 
+import edu.hcmut.datn.productstorage.common.enums.CertificateType;
 import edu.hcmut.datn.productstorage.common.enums.ProviderVerificationType;
+import edu.hcmut.datn.productstorage.common.enums.VerificationStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +27,23 @@ public class Provider {
     @Enumerated(EnumType.STRING)
     private ProviderVerificationType verificationMethod;
 
+    @Column(name = "verification_status")
+    @Setter
+    @Getter
+    @Enumerated(EnumType.STRING)
+    private VerificationStatus verificationStatus = VerificationStatus.UNVERIFIED;
+
+    @Column(name = "certificate_type")
+    @Setter
+    @Getter
+    @Enumerated(EnumType.STRING)
+    private CertificateType certificateType;
+
+    @Column(name = "logo_url")
+    @Setter
+    @Getter
+    private String logoUrl;
+
     @Column(name = "created_at")
     @Getter
     private LocalDateTime createdAt;
@@ -36,6 +55,15 @@ public class Provider {
     public Provider(Long providerId, ProviderVerificationType verificationMethod) {
         this.providerId = providerId;
         this.verificationMethod = verificationMethod;
+        this.verificationStatus = VerificationStatus.UNVERIFIED;
+    }
+
+    public Provider(Long providerId, ProviderVerificationType verificationMethod,
+                   VerificationStatus verificationStatus, CertificateType certificateType) {
+        this.providerId = providerId;
+        this.verificationMethod = verificationMethod;
+        this.verificationStatus = verificationStatus;
+        this.certificateType = certificateType;
     }
 
     @PrePersist

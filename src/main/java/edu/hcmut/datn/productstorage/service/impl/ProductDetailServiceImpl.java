@@ -9,6 +9,7 @@ import edu.hcmut.datn.productstorage.common.enums.ProviderVerificationType;
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
 import edu.hcmut.datn.productstorage.dao.ProductGeneral;
 import edu.hcmut.datn.productstorage.dao.ProductSubBatch;
+import edu.hcmut.datn.productstorage.dao.Provider;
 import edu.hcmut.datn.productstorage.dto.request.ProcessBatchRequest;
 import edu.hcmut.datn.productstorage.dto.response.ProcessBatchResponse;
 import edu.hcmut.datn.productstorage.exception.ProductBatchAlreadyProcessedException;
@@ -22,6 +23,7 @@ import edu.hcmut.datn.productstorage.repository.ProductSubBatchRepository;
 import edu.hcmut.datn.productstorage.service.ProductBatchService;
 import edu.hcmut.datn.productstorage.service.ProductGeneralService;
 import edu.hcmut.datn.productstorage.service.ProductSubBatchService;
+import edu.hcmut.datn.productstorage.service.ProviderService;
 import edu.hcmut.datn.productstorage.util.UnitConverter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -46,6 +48,7 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     private final ProductBatchService productBatchService;
     private final ProductSubBatchService productSubBatchService;
     private final ProductGeneralService productGeneralService;
+    private final ProviderService providerService;
     private final BatchDetailProducer batchDetailProducer;
 
     @Override
@@ -154,7 +157,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 "",
                 productDetail.getSubBatchId(),
                 productBatch.getVerificationType() != null ? productBatch.getVerificationType().name() : null,
-                productBatch.getProviderId()
+                "NULL",
+                productBatch.getProviderId(),
+                null
         );
 
         batchDetailProducer.publishBatchDetailCreated(event);
@@ -242,6 +247,23 @@ public class ProductDetailServiceImpl implements ProductDetailService {
         productBatch.setProcessStatus(ProductBatchProcessStatus.PROCESSED);
         productBatchRepository.save(productBatch);
 
+        // Get certificate type and logo URL from provider (if available)
+        String certificateType = null;
+        String logoUrl = null;
+        try {
+            if (productBatch.getProviderId() != null) {
+                Provider provider = providerService.read(productBatch.getProviderId());
+                if (provider.getCertificateType() != null) {
+                    certificateType = provider.getCertificateType().name();
+                }
+                logoUrl = provider.getLogoUrl();
+            }
+        } catch (Exception e) {
+            // Log but don't fail - use null if provider not found
+            certificateType = null;
+            logoUrl = null;
+        }
+
         // Publish event WITH provider information
         BatchDetailCreateEvent event = new BatchDetailCreateEvent(
                 productBatch.getBatchId(),
@@ -252,8 +274,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 0L,
                 "",
                 null, // no sub-batch for CERTIFICATE
-                "VIETGAP",
-                productBatch.getProviderId() // Include provider ID
+                "CERTIFICATE",  // verificationType
+                certificateType,  // certificateType (VIETGAP, GLOBALGAP, etc.)
+                productBatch.getProviderId(), // Include provider ID
+                logoUrl  // Provider logo URL
         );
         batchDetailProducer.publishBatchDetailCreated(event);
 
@@ -371,8 +395,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
                 0L,
                 "",
                 null, // No specific sub-batch for pooled product
-                ProviderVerificationType.VIDEO.name(),
-                null // No provider ID for VIDEO batches (pooled)
+                "VIDEO",  // verificationType
+                null,  // certificateType (null for VIDEO)
+                null, // No provider ID for VIDEO batches (pooled)
+                null  // No logo URL for VIDEO batches (pooled)
         );
         batchDetailProducer.publishBatchDetailCreated(event);
 
