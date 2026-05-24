@@ -26,10 +26,12 @@ public class ProviderCreatedConsumer {
             Provider provider = new Provider();
             provider.setProviderId(event.userId());
 
-            // Set verification method if provided
             if (event.verificationMethod() != null && !event.verificationMethod().isEmpty()) {
                 provider.setVerificationMethod(ProviderVerificationType.valueOf(event.verificationMethod()));
             }
+            provider.setFName(event.fName());
+            provider.setLName(event.lName());
+            provider.setAvtUrl(event.avtUrl());
 
             // Initial status is UNVERIFIED (set by default in Provider constructor)
             // Verification status and certificate type will be updated later via

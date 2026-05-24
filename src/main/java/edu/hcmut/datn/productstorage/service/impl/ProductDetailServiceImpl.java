@@ -25,8 +25,11 @@ import edu.hcmut.datn.productstorage.service.ProductGeneralService;
 import edu.hcmut.datn.productstorage.service.ProductSubBatchService;
 import edu.hcmut.datn.productstorage.service.ProviderService;
 import edu.hcmut.datn.productstorage.util.UnitConverter;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import edu.hcmut.datn.productstorage.dao.ProductDetail;
@@ -37,6 +40,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -66,6 +70,45 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     public List<ProductDetail> readAll(Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         return productDetailRepository.findAll(pageable).toList();
+    }
+
+    @Override
+    public Page<ProductDetail> readAll(Integer pageNum, Integer pageSize,
+                                       Long batchId, Long prodGenId, Long subBatchId,
+                                       String sortBy, String sortDir) {
+        Sort.Direction direction = "desc".equalsIgnoreCase(sortDir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        String sortField = "prodDetailId".equalsIgnoreCase(sortBy) ? "prodDetailId" : "createdAt";
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize, Sort.by(direction, sortField));
+
+        Specification<ProductDetail> spec = buildSpec(batchId, prodGenId, subBatchId);
+        
+        return productDetailRepository.findAll(spec, pageable);
+    }
+    
+    private Specification<ProductDetail> buildSpec(Long batchId, Long prodGenId, Long subBatchId) {
+        List<Specification<ProductDetail>> specs = new ArrayList<>();
+        
+        if (batchId != null) {
+            specs.add(
+                    (root, query, cb) -> cb.equal(root.get("batchId"), batchId)
+            );
+        }
+        if (prodGenId != null) {
+            specs.add(
+                    (root, query, cb) -> cb.equal(root.get("prodGenId"), prodGenId)
+            );
+        }
+        if (subBatchId != null) {
+            specs.add(
+                    (root, query, cb) -> cb.equal(root.get("subBatchId"), subBatchId)
+            );
+        }
+        
+        Specification<ProductDetail> result = (root, query, cb) -> cb.conjunction();
+        for (Specification<ProductDetail> spec : specs) {
+            result = result.and(spec);
+        }
+        return result;
     }
 
     @Override
@@ -169,6 +212,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
     @Override
     @Transactional
+    public Optional<Long> findProdGenIdByBatchId(Long batchId) {
+        return productDetailRepository.findProdGenIdByBatchId(batchId);
+    }
+
     public ProcessBatchResponse processProductBatchV2(ProcessBatchRequest request) {
         // Fetch batch and product general
         ProductBatch productBatch = productBatchService.read(request.getBatchId());
@@ -313,6 +360,11 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
         // Process each sub-batch
         for (ProductSubBatch subBatch : subBatches) {
+            // Skip rejected sub-batches — they were declined at delivery and should not block processing
+            if (subBatch.getProcessStatus() == ProductBatchProcessStatus.REJECTED) {
+                continue;
+            }
+
             // Validate sub-batch status
             if (subBatch.getProcessStatus() != ProductBatchProcessStatus.PENDING) {
                 throw new ProductSubBatchAlreadyProcessedException(
@@ -375,6 +427,10 @@ public class ProductDetailServiceImpl implements ProductDetailService {
             ));
 
             totalProductDetailsCreated += numOfProdDetail;
+        }
+
+        if (allProductDetails.isEmpty()) {
+            throw new IllegalStateException("All sub-batches have been rejected; no product details can be created");
         }
 
         // Save all product details

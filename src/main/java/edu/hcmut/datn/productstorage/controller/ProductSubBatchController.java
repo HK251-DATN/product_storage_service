@@ -8,12 +8,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
 import edu.hcmut.datn.productstorage.dao.ProductSubBatch;
 import edu.hcmut.datn.productstorage.dto.request.DeliveryAcceptanceRequest;
 import edu.hcmut.datn.productstorage.dto.request.ProductSubBatchCreateRequest;
 import edu.hcmut.datn.productstorage.dto.request.ProductSubBatchUpdateRequest;
 import edu.hcmut.datn.productstorage.dto.response.ApiResponse;
+import edu.hcmut.datn.productstorage.dto.response.ProductSubBatchResponse;
 import edu.hcmut.datn.productstorage.service.ProductSubBatchService;
+import edu.hcmut.datn.productstorage.service.ProviderService;
 import lombok.AllArgsConstructor;
 
 @Controller
@@ -22,6 +25,7 @@ import lombok.AllArgsConstructor;
 public class ProductSubBatchController {
 
     private final ProductSubBatchService productSubBatchService;
+    private final ProviderService providerService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<ProductSubBatch>> create(@RequestBody ProductSubBatchCreateRequest request) {
@@ -107,10 +111,21 @@ public class ProductSubBatchController {
     }
 
     @GetMapping("/by-batch/{batchId}")
-    public ResponseEntity<ApiResponse<List<ProductSubBatch>>> findByProductBatchId(@PathVariable Long batchId) {
+    public ResponseEntity<ApiResponse<List<ProductSubBatchResponse>>> findByProductBatchId(
+            @PathVariable Long batchId,
+            @RequestParam(required = false) List<ProductBatchProcessStatus> status) {
         try {
-            List<ProductSubBatch> subBatches = productSubBatchService.findByProductBatchId(batchId);
-            return ResponseEntity.ok(ApiResponse.SUCCESS("OK", "Sub batches retrieved for batch", subBatches));
+            List<ProductSubBatchResponse> result = productSubBatchService.findByProductBatchId(batchId, status).stream()
+                    .map(subBatch -> {
+                        if (subBatch.getProviderId() == null) return new ProductSubBatchResponse(subBatch, null);
+                        try {
+                            return new ProductSubBatchResponse(subBatch, providerService.read(subBatch.getProviderId()));
+                        } catch (Exception e) {
+                            return new ProductSubBatchResponse(subBatch, null);
+                        }
+                    })
+                    .toList();
+            return ResponseEntity.ok(ApiResponse.SUCCESS("OK", "Sub batches retrieved for batch", result));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(ApiResponse.ERROR(HttpStatus.INTERNAL_SERVER_ERROR.toString(), e.getMessage(), null));

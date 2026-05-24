@@ -2,6 +2,9 @@ package edu.hcmut.datn.productstorage.controller;
 
 import java.util.List;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,6 +21,8 @@ import edu.hcmut.datn.productstorage.dao.ProductGeneral;
 import edu.hcmut.datn.productstorage.dto.request.ProductGeneralCreateRequest;
 import edu.hcmut.datn.productstorage.dto.request.ProductGeneralUpdateRequest;
 import edu.hcmut.datn.productstorage.dto.response.ApiResponse;
+import edu.hcmut.datn.productstorage.dto.response.AvailableProductResponse;
+import edu.hcmut.datn.productstorage.dto.response.PagedResponse;
 import edu.hcmut.datn.productstorage.service.ProductGeneralService;
 import lombok.AllArgsConstructor;
 
@@ -98,6 +103,35 @@ public class ProductGeneralController {
             return ResponseEntity.badRequest()
                     .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
         }
+    }
+
+    /**
+     * GET /api/product-general/available
+     *
+     * Returns processed batches enriched with their associated product-general info.
+     *
+     * Query params:
+     *   pageNum  (int, default 1)   – 1-based page number
+     *   pageSize (int, default 20)  – items per page
+     *   sortBy   (String, default "createdAt") – "createdAt" | "batchId"
+     *   sortDir  (String, default "desc")      – "asc" | "desc"
+     */
+    @GetMapping("/available")
+    public ResponseEntity<ApiResponse<PagedResponse<AvailableProductResponse>>> getAvailable(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "20") Integer pageSize,
+            @RequestParam(defaultValue = "createdAt") String sortBy,
+            @RequestParam(defaultValue = "desc") String sortDir
+    ) {
+        Page<AvailableProductResponse> page = productGeneralService.getAvailable(pageNum, pageSize, sortBy, sortDir);
+        PagedResponse<AvailableProductResponse> pagedResponse = PagedResponse.of(page, pageNum);
+
+        if (page.isEmpty()) {
+            return ResponseEntity.ok().body(ApiResponse.SKIP_AS_GOOD(HttpStatus.OK.toString(), "No available products", pagedResponse));
+        }
+
+        return ResponseEntity.ok()
+                .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Available products retrieved", pagedResponse));
     }
 
     @GetMapping("/suitable-for-batch/{batchId}")

@@ -39,6 +39,21 @@ public class Provider {
     @Enumerated(EnumType.STRING)
     private CertificateType certificateType;
 
+    @Column(name = "f_name")
+    @Setter
+    @Getter
+    private String fName;
+
+    @Column(name = "l_name")
+    @Setter
+    @Getter
+    private String lName;
+
+    @Column(name = "avt_url")
+    @Setter
+    @Getter
+    private String avtUrl;
+
     @Column(name = "logo_url")
     @Setter
     @Getter

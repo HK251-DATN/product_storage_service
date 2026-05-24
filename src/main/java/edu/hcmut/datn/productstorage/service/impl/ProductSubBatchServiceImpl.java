@@ -1,6 +1,7 @@
 package edu.hcmut.datn.productstorage.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +36,33 @@ public class ProductSubBatchServiceImpl implements ProductSubBatchService {
     private String proofImgBucket;
 
     @Override
+    @Transactional
     public ProductSubBatch create(ProductSubBatch productSubBatch) {
+        if (productSubBatch.getProviderId() != null
+                && productSubBatch.getRawProductDemandId() != null
+                && productSubBatch.getProductBatchId() != null) {
+            Optional<ProductSubBatch> existing = productSubBatchRepository
+                    .findByProviderIdAndRawProductDemandIdAndProductBatchIdAndProcessStatusIn(
+                            productSubBatch.getProviderId(),
+                            productSubBatch.getRawProductDemandId(),
+                            productSubBatch.getProductBatchId(),
+                            List.of(ProductBatchProcessStatus.WAIT_FOR_DELIVERY, ProductBatchProcessStatus.PENDING));
+            if (existing.isPresent()) {
+                ProductSubBatch merged = existing.get();
+                long addedQty = productSubBatch.getQuantity() != null ? productSubBatch.getQuantity() : 0L;
+                merged.setQuantity((merged.getQuantity() != null ? merged.getQuantity() : 0L) + addedQty);
+
+                // For PENDING sub-batches the accept step has already run, so demand progress
+                // must be updated immediately for the newly merged quantity.
+                if (merged.getProcessStatus() == ProductBatchProcessStatus.PENDING && addedQty != 0) {
+                    adjustDemandProgress(productSubBatch.getRawProductDemandId(), addedQty);
+                }
+                // For WAIT_FOR_DELIVERY, demand progress is updated at acceptDelivery time
+                // using (actualQuantity - storedQuantity), so no adjustment is needed here.
+
+                return productSubBatchRepository.save(merged);
+            }
+        }
         return productSubBatchRepository.save(productSubBatch);
     }
 
@@ -80,6 +107,7 @@ public class ProductSubBatchServiceImpl implements ProductSubBatchService {
     }
 
     @Override
+    @Transactional
     public ProductSubBatch uploadProofImages(Long subBatchId, List<MultipartFile> images) {
         ProductSubBatch productSubBatch = read(subBatchId);
         List<String> uploadedUrls = images.stream()
@@ -93,6 +121,14 @@ public class ProductSubBatchServiceImpl implements ProductSubBatchService {
     @Override
     public List<ProductSubBatch> findByProductBatchId(Long productBatchId) {
         return productSubBatchRepository.findByProductBatchId(productBatchId);
+    }
+
+    @Override
+    public List<ProductSubBatch> findByProductBatchId(Long productBatchId, List<ProductBatchProcessStatus> statuses) {
+        if (statuses == null || statuses.isEmpty()) {
+            return productSubBatchRepository.findByProductBatchId(productBatchId);
+        }
+        return productSubBatchRepository.findByProductBatchIdAndProcessStatusIn(productBatchId, statuses);
     }
 
     @Override
