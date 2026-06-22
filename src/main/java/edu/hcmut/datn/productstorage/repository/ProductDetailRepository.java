@@ -2,14 +2,16 @@ package edu.hcmut.datn.productstorage.repository;
 
 import edu.hcmut.datn.productstorage.repository.projector.ProductDetailForPickItem;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import edu.hcmut.datn.productstorage.dao.ProductDetail;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long> {
+public interface ProductDetailRepository extends JpaRepository<ProductDetail, Long>, JpaSpecificationExecutor<ProductDetail> {
     
     @Query(value = """
             SELECT COUNT(*)
@@ -58,4 +60,7 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, Lo
     List<ProductDetailForPickItem> getProductDetailListForPickItem(
             @Param("batch_id") Long batchId
     );
+
+    @Query("SELECT DISTINCT pd.prodGenId FROM ProductDetail pd WHERE pd.batchId = :batchId")
+    Optional<Long> findProdGenIdByBatchId(@Param("batchId") Long batchId);
 }

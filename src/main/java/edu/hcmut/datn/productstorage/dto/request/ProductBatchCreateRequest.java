@@ -3,6 +3,7 @@ package edu.hcmut.datn.productstorage.dto.request;
 import java.time.LocalDateTime;
 
 import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
+import edu.hcmut.datn.productstorage.common.enums.ProviderVerificationType;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
 import lombok.AllArgsConstructor;
@@ -22,12 +23,16 @@ public class ProductBatchCreateRequest {
     private Long providerId;
     private Long subSubcategoryId;
     private ProductBatchProcessStatus processStatus;
+    private ProviderVerificationType verificationType;
+    private Long rawProductDemandId;
 
     public ProductBatch toEntity() {
         ProductBatch productBatch = new ProductBatch(quantity, unit, note, receivedAt, expiredAt, providerId, subSubcategoryId);
         if (processStatus != null) {
             productBatch.setProcessStatus(processStatus);
         }
+        productBatch.setVerificationType(verificationType);
+        productBatch.setRawProductDemandId(rawProductDemandId);
         return productBatch;
     }
 }

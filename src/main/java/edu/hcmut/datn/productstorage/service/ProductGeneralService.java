@@ -2,7 +2,9 @@ package edu.hcmut.datn.productstorage.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import edu.hcmut.datn.productstorage.dao.ProductGeneral;
+import edu.hcmut.datn.productstorage.dto.response.AvailableProductResponse;
 import edu.hcmut.datn.productstorage.messaging.productgeneral.ProductGeneralCreatedEvent;
 
 public interface ProductGeneralService {
@@ -20,4 +22,6 @@ public interface ProductGeneralService {
     ProductGeneral create(ProductGeneralCreatedEvent event);
 
     List<ProductGeneral> getSuitableForBatch(Long batchId);
+
+    Page<AvailableProductResponse> getAvailable(Integer pageNum, Integer pageSize, String sortBy, String sortDir);
 }

@@ -21,6 +21,31 @@ spring:
 server:
   port: 9200
 
+services:
+  identity:
+    url: http://${IDENTITY_HOST:localhost}:${IDENTITY_PORT:9000}
+  back-office:
+    url: http://${BACK_OFFICE_HOST:localhost}:${BACK_OFFICE_PORT:9100}
+  ecommerce:
+    url: http://${ECOMMERCE_HOST:localhost}:${ECOMMERCE_PORT:9300}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 50MB
+
+cloudflare:
+  r2:
+    account-id: ${R2_ACCOUNT_ID}
+    endpoint: https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com
+    access-key: ${R2_ACCESS_KEY}
+    secret-key: ${R2_SECRET_KEY}
+    region: auto
+
 app:
   kafka-url:
     ${KAFKA_HOST}:${KAFKA_PORT}
+  product-batch-proof-img-bucket:
+    product-batch-proof-img
+  product-batch-proof-img-public-bucket-url:
+    https://pub-f718e3cf29184b27a8a55e13032dd01e.r2.dev

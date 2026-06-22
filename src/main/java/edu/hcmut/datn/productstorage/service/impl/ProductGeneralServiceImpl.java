@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
 import edu.hcmut.datn.productstorage.dao.ProductBatch;
+import edu.hcmut.datn.productstorage.dto.response.AvailableProductResponse;
 import edu.hcmut.datn.productstorage.messaging.productgeneral.ProductGeneralCreatedEvent;
+import edu.hcmut.datn.productstorage.repository.ProductDetailRepository;
 import edu.hcmut.datn.productstorage.service.ProductBatchService;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,7 @@ public class ProductGeneralServiceImpl implements ProductGeneralService {
 
     private final ProductGeneralRepository productGeneralRepository;
     private final ProductBatchService productBatchService;
+    private final ProductDetailRepository productDetailRepository;
 
     private static final Set<Unit> MASS_UNITS = Set.of(Unit.KILOGRAM, Unit.GRAM);
     private static final Set<Unit> VOLUME_UNITS = Set.of(Unit.LITER, Unit.MILLILITER);
@@ -97,6 +102,22 @@ public class ProductGeneralServiceImpl implements ProductGeneralService {
         return matchingCategory.stream()
                 .filter(pg -> areUnitsCompatible(batch.getUnit(), pg.getUnit()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<AvailableProductResponse> getAvailable(Integer pageNum, Integer pageSize, String sortBy, String sortDir) {
+        Page<ProductBatch> batchPage = productBatchService.readAll(
+                pageNum, pageSize, ProductBatchProcessStatus.PROCESSED, null, null, null, sortBy, sortDir);
+
+        return batchPage.map(batch -> {
+            ProductGeneral productGeneral = productDetailRepository.findProdGenIdByBatchId(batch.getBatchId())
+                    .map(prodGenId -> {
+                        try { return read(prodGenId); }
+                        catch (Exception e) { return null; }
+                    })
+                    .orElse(null);
+            return new AvailableProductResponse(batch, productGeneral);
+        });
     }
 
     private boolean areUnitsCompatible(Unit unit1, Unit unit2) {

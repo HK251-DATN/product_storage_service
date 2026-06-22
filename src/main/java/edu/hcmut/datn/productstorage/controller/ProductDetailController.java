@@ -2,7 +2,9 @@ package edu.hcmut.datn.productstorage.controller;
 
 import java.util.List;
 
+import edu.hcmut.datn.productstorage.dto.request.ProcessBatchRequest;
 import edu.hcmut.datn.productstorage.dto.request.ProcessProductBatchRequest;
+import edu.hcmut.datn.productstorage.dto.response.ProcessBatchResponse;
 import edu.hcmut.datn.productstorage.service.PickListService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import edu.hcmut.datn.productstorage.dao.ProductDetail;
 import edu.hcmut.datn.productstorage.dto.request.ProductDetailCreateRequest;
 import edu.hcmut.datn.productstorage.dto.request.ProductDetailUpdateRequest;
+import org.springframework.data.domain.Page;
 import edu.hcmut.datn.productstorage.dto.response.ApiResponse;
+import edu.hcmut.datn.productstorage.dto.response.PagedResponse;
 import edu.hcmut.datn.productstorage.service.ProductDetailService;
 import lombok.AllArgsConstructor;
 
@@ -59,19 +63,44 @@ public class ProductDetailController {
         }
     }
 
+    /**
+     * GET /api/product-detail
+     *
+     * Query params:
+     *   pageNum  (int,    default 1)            – 1-based page number
+     *   pageSize (int,    default 20)            – items per page
+     *   batchId  (Long,   optional)              – filter by parent batch ID
+     *   prodGenId(Long,   optional)              – filter by product general ID
+     *   subBatchId(Long,  optional)              – filter by sub-batch ID (VIDEO batches only)
+     *   sortBy   (String, default "prodDetailId")– sort field: "prodDetailId" | "createdAt"
+     *   sortDir  (String, default "asc")         – sort direction: "asc" | "desc"
+     *
+     * Examples:
+     *   GET /api/product-detail
+     *   GET /api/product-detail?batchId=5
+     *   GET /api/product-detail?batchId=5&subBatchId=3
+     *   GET /api/product-detail?prodGenId=12&sortBy=createdAt&sortDir=desc
+     *   GET /api/product-detail?pageNum=2&pageSize=50&batchId=1&sortBy=prodDetailId&sortDir=asc
+     */
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ProductDetail>>> readAll(
+    public ResponseEntity<ApiResponse<PagedResponse<ProductDetail>>> readAll(
             @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "20") Integer pageSize
+            @RequestParam(defaultValue = "20") Integer pageSize,
+            @RequestParam(required = false) Long batchId,
+            @RequestParam(required = false) Long prodGenId,
+            @RequestParam(required = false) Long subBatchId,
+            @RequestParam(defaultValue = "prodDetailId") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir
     ) {
-        List<ProductDetail> productDetails = productDetailService.readAll(pageNum, pageSize);
+        Page<ProductDetail> page = productDetailService.readAll(pageNum, pageSize, batchId, prodGenId, subBatchId, sortBy, sortDir);
+        PagedResponse<ProductDetail> pagedResponse = PagedResponse.of(page, pageNum);
 
-        if (productDetails.isEmpty()) {
-            return ResponseEntity.ok().body(ApiResponse.SKIP_AS_GOOD(HttpStatus.OK.toString(), "No productDetail exists", null));
+        if (page.isEmpty()) {
+            return ResponseEntity.ok().body(ApiResponse.SKIP_AS_GOOD(HttpStatus.OK.toString(), "No productDetail exists", pagedResponse));
         }
 
         return ResponseEntity.ok()
-                .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Get all productDetails successfully", productDetails));
+                .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Get all productDetails successfully", pagedResponse));
     }
 
     @PutMapping("/{productDetailId}")
@@ -108,15 +137,11 @@ public class ProductDetailController {
     @PostMapping("/process-batch")
     public ResponseEntity<ApiResponse<List<ProductDetail>>> processBatch(
             @RequestBody ProcessProductBatchRequest request
-            ) {
+    ) {
         try {
-            List<ProductDetail> newProductDetails = productDetailService.processProductBatch(
-                    request.toEntity()
-            );
+            List<ProductDetail> newProductDetails = productDetailService.processProductBatch(request.toEntity());
 
-            newProductDetails.forEach(productDetail -> {
-                log.info(productDetail.getProdDetailId().toString());
-            });
+            newProductDetails.forEach(productDetail -> log.info(productDetail.getProdDetailId().toString()));
 
             return ResponseEntity.ok()
                     .body(ApiResponse.SUCCESS(HttpStatus.OK.toString(), "Process batch successfully", newProductDetails));
@@ -125,7 +150,54 @@ public class ProductDetailController {
                     .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
         }
     }
-    
+
+    /**
+     * Process a ProductBatch into ProductDetails (V2 - UX/UI friendly)
+     *
+     * Automatically handles both CERTIFICATE and VIDEO verified batches:
+     * - CERTIFICATE: Creates product details with provider attribution
+     * - VIDEO: Distributes product details proportionally across sub-batches
+     *
+     * Request body example:
+     * {
+     *   "batchId": 1,
+     *   "productGeneralId": 5,
+     *   "price": 50000,
+     *   "storageToolId": 3,
+     *   "numOfStar": 0
+     * }
+     *
+     * Response includes detailed breakdown:
+     * - For CERTIFICATE: Shows provider ID and total units created
+     * - For VIDEO: Shows breakdown by sub-batch with provider IDs
+     */
+    @PostMapping("/process-batch-v2")
+    public ResponseEntity<ApiResponse<ProcessBatchResponse>> processBatchV2(
+            @RequestBody ProcessBatchRequest request
+    ) {
+        try {
+            ProcessBatchResponse response = productDetailService.processProductBatchV2(request);
+
+            log.info("Processed batch {} ({}): {} product details created",
+                    response.getBatchId(),
+                    response.getVerificationType(),
+                    response.getTotalProductDetailsCreated());
+
+            return ResponseEntity.ok()
+                    .body(ApiResponse.SUCCESS(
+                            HttpStatus.OK.toString(),
+                            String.format("Batch processed successfully (%s verification): %d product details created",
+                                    response.getVerificationType(),
+                                    response.getTotalProductDetailsCreated()),
+                            response
+                    ));
+        } catch (Exception e) {
+            log.error("Error processing batch: {}", e.getMessage(), e);
+            return ResponseEntity.badRequest()
+                    .body(ApiResponse.ERROR(HttpStatus.BAD_REQUEST.toString(), e.getMessage(), null));
+        }
+    }
+
     @GetMapping("/quantity/{batchId}")
     public ResponseEntity<ApiResponse<Integer>> getProductDetailQuantity(
             @PathVariable Long batchId

@@ -1,8 +1,11 @@
 package edu.hcmut.datn.productstorage.dao;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
+import edu.hcmut.datn.productstorage.common.enums.ProviderVerificationType;
 import edu.hcmut.datn.productstorage.common.enums.Unit;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -64,14 +67,31 @@ public class ProductBatch {
     @Setter
     @Getter
     private Long providerId;
-    
+
     @Column(name = "sub_subcategory_id")
     @Setter
     @Getter
     private Long subSubcategoryId;
 
-    public ProductBatch(Long quantity, Unit unit, String note, LocalDateTime receivedAt, LocalDateTime expiredAt, Long providerId, Long subSubcategoryId) {
+    @Column(name = "verification_type")
+    @Setter
+    @Getter
+    @Enumerated(EnumType.STRING)
+    private ProviderVerificationType verificationType;
 
+    @Column(name = "raw_product_demand_id")
+    @Setter
+    @Getter
+    private Long rawProductDemandId;
+
+    @ElementCollection
+    @CollectionTable(name = "product_batch_proof_images", joinColumns = @JoinColumn(name = "batch_id"))
+    @Column(name = "image_url")
+    @Setter
+    @Getter
+    private List<String> proofImageUrls = new ArrayList<>();
+
+    public ProductBatch(Long quantity, Unit unit, String note, LocalDateTime receivedAt, LocalDateTime expiredAt, Long providerId, Long subSubcategoryId) {
         this.quantity = quantity;
         this.unit = unit;
         this.note = note;
@@ -84,12 +104,12 @@ public class ProductBatch {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now(); // Set createdAt on first save
-        updatedAt = LocalDateTime.now(); // Optional: Set initial updatedAt
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now(); // Update on every save after creation
+        updatedAt = LocalDateTime.now();
     }
 }
