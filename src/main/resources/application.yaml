@@ -21,6 +21,19 @@ spring:
 server:
   port: 9200
 
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  health:
+    readinessstate:
+      enabled: true
+
 services:
   identity:
     url: http://${IDENTITY_HOST:localhost}:${IDENTITY_PORT:9000}

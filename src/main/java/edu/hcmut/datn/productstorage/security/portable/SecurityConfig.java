@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint))
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
                                 // TODO: restrict to internal services only once service-to-service auth is in place
                                 .requestMatchers(HttpMethod.GET, "/api/product-batch/*/proof-images").permitAll()
                                 .anyRequest().authenticated()
