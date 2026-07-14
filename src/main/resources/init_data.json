@@ -1,0 +1,71 @@
+{
+  "Warehouses": [
+    { "id": 1, "address": "123 Nguyễn Văn Linh, Quận 7, TP.HCM" },
+    { "id": 2, "address": "456 Võ Văn Ngân, Thủ Đức, TP.HCM" },
+    { "id": 3, "address": "789 Quang Trung, Gò Vấp, TP.HCM" }
+  ],
+  "StorageTools": [
+    { "id": 1, "warehouseId": 1, "toolType": "RACK", "status": "ACTIVE", "lastMaintainanceMonthsAgo": 3 },
+    { "id": 2, "warehouseId": 1, "toolType": "RACK", "status": "ACTIVE", "lastMaintainanceMonthsAgo": 2 },
+    { "id": 3, "warehouseId": 2, "toolType": "RACK", "status": "ACTIVE", "lastMaintainanceMonthsAgo": 1 },
+    { "id": 4, "warehouseId": 2, "toolType": "RACK", "status": "ACTIVE", "lastMaintainanceMonthsAgo": 4 },
+    { "id": 5, "warehouseId": 1, "toolType": "FRIDGE", "status": "ACTIVE", "lastMaintainanceMonthsAgo": 6 },
+    { "id": 6, "warehouseId": 2, "toolType": "FRIDGE", "status": "ACTIVE", "lastMaintainanceMonthsAgo": 5 },
+    { "id": 7, "warehouseId": 3, "toolType": "FRIDGE", "status": "ACTIVE", "lastMaintainanceMonthsAgo": 2 },
+    { "id": 8, "warehouseId": 3, "toolType": "FRIDGE", "status": "ACTIVE", "lastMaintainanceMonthsAgo": 3 }
+  ],
+  "Racks": [
+    { "storageToolId": 1, "numOfLevel": 5 },
+    { "storageToolId": 2, "numOfLevel": 4 },
+    { "storageToolId": 3, "numOfLevel": 6 },
+    { "storageToolId": 4, "numOfLevel": 5 }
+  ],
+  "Fridges": [
+    { "storageToolId": 5, "curTemp": 4, "minTemp": 0, "maxTemp": 8 },
+    { "storageToolId": 6, "curTemp": 2, "minTemp": -2, "maxTemp": 5 },
+    { "storageToolId": 7, "curTemp": 3, "minTemp": 1, "maxTemp": 6 },
+    { "storageToolId": 8, "curTemp": 4, "minTemp": 0, "maxTemp": 8 }
+  ],
+  "ProductBatches": [
+    { "subSubcategoryName": "Thịt Gà", "quantity": 100, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Thịt Vịt", "quantity": 80, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Thịt Ngan", "quantity": 50, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Thịt Chim Cút", "quantity": 30, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Lòng Gia Cầm", "quantity": 25, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Thịt Bò", "quantity": 150, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Thịt Heo", "quantity": 200, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Thịt Dê", "quantity": 60, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Thịt Cừu", "quantity": 40, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Xúc Xích Tươi", "quantity": 50, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Tôm Tươi", "quantity": 80, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Cá Tươi", "quantity": 120, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Mực Tươi", "quantity": 60, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Cua Ghẹ", "quantity": 70, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Nghêu Sò", "quantity": 90, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Rau Muống", "quantity": 50, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Cải Xanh", "quantity": 60, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Xà Lách", "quantity": 40, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Rau Dền", "quantity": 45, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Cải Thìa", "quantity": 55, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Cà Rốt", "quantity": 100, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Khoai Tây", "quantity": 150, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Củ Cải", "quantity": 80, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Bắp", "quantity": 120, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Su Su", "quantity": 70, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Xoài", "quantity": 90, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Chuối", "quantity": 100, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Dưa Hấu", "quantity": 200, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Ổi", "quantity": 80, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Thanh Long", "quantity": 110, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Hành Lá", "quantity": 30, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Tỏi", "quantity": 40, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Gừng", "quantity": 35, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Ớt", "quantity": 25, "unit": "KILOGRAM" },
+    { "subSubcategoryName": "Sả", "quantity": 20, "unit": "KILOGRAM" }
+  ],
+  "RawProductDemands": [
+    { "subSubcategoryName": "Thịt Heo", "unit": "KILOGRAM", "unitQuantity": 500, "unitPrice": 85000, "daysUntilNeeded": 7, "note": "Cần thịt heo tươi cho tuần sau" },
+    { "subSubcategoryName": "Thịt Bò", "unit": "KILOGRAM", "unitQuantity": 300, "unitPrice": 220000, "daysUntilNeeded": 10, "note": "Cần thịt bò Úc loại 1" },
+    { "subSubcategoryName": "Tôm Tươi", "unit": "KILOGRAM", "unitQuantity": 200, "unitPrice": 150000, "daysUntilNeeded": 5, "note": "Cần tôm sú tươi size lớn" }
+  ]
+}
