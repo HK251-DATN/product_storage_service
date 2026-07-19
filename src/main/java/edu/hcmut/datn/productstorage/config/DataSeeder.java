@@ -12,8 +12,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
-import edu.hcmut.datn.productstorage.common.enums.ProviderVerificationType;
 import edu.hcmut.datn.productstorage.common.enums.RawProductDemandStatus;
 import edu.hcmut.datn.productstorage.dao.*;
 import edu.hcmut.datn.productstorage.repository.*;
@@ -32,10 +30,10 @@ public class DataSeeder {
 
     private static final String INIT_DATA_FILE = "init_data.json";
 
-    // ProductBatch/RawProductDemand need SubSubcategory rows that arrive
-    // asynchronously via Kafka from back-office-service, in a separate process -
-    // there's no ordering guarantee between "this service's own seed data is
-    // written" and "its Kafka consumer has caught up". Bound the wait so a fresh
+    // RawProductDemand needs SubSubcategory rows that arrive asynchronously via
+    // Kafka from back-office-service, in a separate process - there's no
+    // ordering guarantee between "this service's own seed data is written" and
+    // "its Kafka consumer has caught up". Bound the wait so a fresh
     // `docker compose up` doesn't need a manual restart to seed them correctly.
     private static final Duration SUBSUBCATEGORY_WAIT_TIMEOUT = Duration.ofSeconds(30);
     private static final Duration SUBSUBCATEGORY_POLL_INTERVAL = Duration.ofSeconds(1);
@@ -46,7 +44,6 @@ public class DataSeeder {
     private final FridgeRepository fridgeRepository;
     private final RackLevelRepository rackLevelRepository;
     private final SubSubcategoryRepository subSubcategoryRepository;
-    private final ProductBatchRepository productBatchRepository;
     private final RawProductDemandRepository rawProductDemandRepository;
     private final ObjectMapper objectMapper;
 
@@ -75,10 +72,9 @@ public class DataSeeder {
             // SubSubcategories/ProductGenerals are not seeded here - they arrive
             // asynchronously via Kafka from back-office-service's own DataSeeder
             // (SubSubcategoryCreatedConsumer / ProductGeneralCreatedConsumer).
-            // ProductBatch/RawProductDemand need those rows to already exist locally,
-            // so wait (bounded) for them to arrive before seeding.
+            // RawProductDemand needs those rows to already exist locally, so wait
+            // (bounded) for them to arrive before seeding.
             waitForSubSubcategories(collectRequiredSubSubcategoryNames(initData));
-            seedProductBatches(initData.getProductBatches());
             seedRawProductDemands(initData.getRawProductDemands());
 
             log.info("Database seeding completed successfully!");
@@ -153,7 +149,6 @@ public class DataSeeder {
 
     private Set<String> collectRequiredSubSubcategoryNames(InitData initData) {
         Set<String> names = new HashSet<>();
-        initData.getProductBatches().forEach(seed -> names.add(seed.getSubSubcategoryName()));
         initData.getRawProductDemands().forEach(seed -> names.add(seed.getSubSubcategoryName()));
         return names;
     }
@@ -188,35 +183,9 @@ public class DataSeeder {
             log.info("All required SubSubcategories are available.");
         } else {
             log.warn("Timed out waiting for {} SubSubcategories to arrive via Kafka: {}. "
-                            + "Corresponding ProductBatch/RawProductDemand rows will be skipped.",
+                            + "Corresponding RawProductDemand rows will be skipped.",
                     missing.size(), missing);
         }
-    }
-
-    private void seedProductBatches(List<InitData.ProductBatchSeed> productBatches) {
-        int skipped = 0;
-
-        for (InitData.ProductBatchSeed seed : productBatches) {
-            Optional<SubSubcategory> subSubcategory = subSubcategoryRepository.findByName(seed.getSubSubcategoryName());
-            if (subSubcategory.isEmpty()) {
-                log.warn("ProductBatch references SubSubcategory '{}' which hasn't arrived via Kafka yet, skipping",
-                        seed.getSubSubcategoryName());
-                skipped++;
-                continue;
-            }
-
-            LocalDateTime receivedAt = LocalDateTime.now();
-            LocalDateTime expiredAt = receivedAt.plusDays(subSubcategory.get().getAvgShelfDays());
-
-            ProductBatch batch = new ProductBatch(seed.getQuantity(), seed.getUnit(), "", receivedAt, expiredAt,
-                    null, subSubcategory.get().getSubSubcategoryId());
-            batch.setVerificationType(ProviderVerificationType.CERTIFICATE);
-            batch.setProcessStatus(ProductBatchProcessStatus.PENDING);
-            productBatchRepository.save(batch);
-        }
-
-        log.info("Seeded {} product batches ({} skipped - SubSubcategory not yet available)",
-                productBatchRepository.count(), skipped);
     }
 
     private void seedRawProductDemands(List<InitData.RawProductDemandSeed> rawProductDemands) {

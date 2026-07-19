@@ -233,7 +233,13 @@ The system implements **two distinct workflows** based on provider verification 
 - 4 Fridges
 - 55 SubSubcategories
 - 105 ProductGenerals
-- 35 ProductBatches (PENDING status)
+
+No `ProductBatch` rows are seeded — a batch always needs a real provider behind
+it (`provider_id` for CERTIFICATE, or real `ProductSubBatch` rows for VIDEO),
+and providers only exist locally once they've gone through actual onboarding.
+See `tools/scenario-seeder`'s provider-certificate/provider-video scenarios and
+the batch-to-detail scenario built on top of them for how batches get created
+in a dev environment.
 
 ### Kafka Event-Driven Architecture
 
@@ -583,13 +589,15 @@ The service includes a `DataSeeder` configuration class that automatically popul
   - Eggs: Industrial Chicken Eggs, Native Chicken Eggs, Duck Eggs, Quail Eggs, Balut
   - Dairy Alternatives: Soy Milk, Nut Milk, Drinkable Yogurt, Kefir, Aloe Vera Yogurt
 - **105 product generals** - 3 variations per sub-subcategory with Vietnamese names and descriptions
-- **35 product batches** - realistic quantities (20-200kg) with `PENDING` status, ready for processing
+
+No `ProductBatch` rows are seeded — see "Entity Counts After Seeding" above for
+why.
 
 **Data Seeding Behavior**:
 - Only runs if `warehouseRepository.count() == 0` (empty database)
 - All entities use Vietnamese names and descriptions
-- Product batches have `process_status = PENDING` (ready for batch processing)
-- **Automatic expiry calculation** using `avg_shelf_days` from SubSubcategory:
+- **Automatic expiry calculation** using `avg_shelf_days` from SubSubcategory
+  (used when a real batch/sub-batch is later created against a SubSubcategory):
   - Shellfish (Nghêu Sò): 1 day
   - Seafood/Poultry Offal: 2 days
   - Poultry/Pork/Herbs: 3 days
@@ -619,5 +627,4 @@ Summary:
   - 8 storage tools (4 racks + 4 fridges)
   - 55 product categories ready for inventory
   - 105 product types available
-  - 35 fresh batches ready to process
 ```

@@ -14,11 +14,21 @@ import lombok.Setter;
  *
  * SubSubcategory/ProductGeneral rows are not seeded here - they arrive
  * asynchronously via Kafka from back-office-service's own DataSeeder
- * (SubSubcategoryCreatedConsumer / ProductGeneralCreatedConsumer). ProductBatch
- * and RawProductDemand reference a SubSubcategory by name (resolved against the
- * local, Kafka-populated table at seed time) rather than by id, since
- * back-office now assigns SubSubcategory ids via auto-increment instead of the
- * old hardcoded 1-55 scheme this service used to duplicate.
+ * (SubSubcategoryCreatedConsumer / ProductGeneralCreatedConsumer). RawProductDemand
+ * references a SubSubcategory by name (resolved against the local,
+ * Kafka-populated table at seed time) rather than by id, since back-office now
+ * assigns SubSubcategory ids via auto-increment instead of the old hardcoded
+ * 1-55 scheme this service used to duplicate.
+ *
+ * ProductBatch rows are intentionally not seeded here: a ProductBatch always
+ * needs a real provider behind it (see CLAUDE.md's Domain Model — CERTIFICATE
+ * batches are uniquely owned by one provider, VIDEO batches are pooled from
+ * real providers' ProductSubBatch rows), and providers only exist locally once
+ * they've gone through actual onboarding (see
+ * tools/scenario-seeder's provider-certificate/provider-video scenarios and
+ * the "batch-to-detail" scenario built on top of them). Static seed data here
+ * had no provider to attach batches to, so batches must come from that flow
+ * instead.
  */
 @Getter
 @Setter
@@ -35,9 +45,6 @@ public class InitData {
 
     @JsonProperty("Fridges")
     private List<FridgeSeed> fridges;
-
-    @JsonProperty("ProductBatches")
-    private List<ProductBatchSeed> productBatches;
 
     @JsonProperty("RawProductDemands")
     private List<RawProductDemandSeed> rawProductDemands;
@@ -73,14 +80,6 @@ public class InitData {
         private Long curTemp;
         private Long minTemp;
         private Long maxTemp;
-    }
-
-    @Getter
-    @Setter
-    public static class ProductBatchSeed {
-        private String subSubcategoryName;
-        private Long quantity;
-        private Unit unit;
     }
 
     @Getter
