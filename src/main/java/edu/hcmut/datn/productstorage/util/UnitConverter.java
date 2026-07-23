@@ -9,12 +9,20 @@ public class UnitConverter {
 
     private static final Set<Unit> MASS_UNITS = Set.of(Unit.KILOGRAM, Unit.GRAM);
     private static final Set<Unit> VOLUME_UNITS = Set.of(Unit.LITER, Unit.MILLILITER);
+    // PIECE/DOZEN have a fixed, universally-understood ratio (1 dozen = 12
+    // pieces), unlike PACK/BOX/BOTTLE whose size is arbitrary per-product and
+    // therefore can't be given a single global conversion factor - those three
+    // are intentionally left out of every *_UNITS set below and only match via
+    // the unitIn == unitOut short-circuit above, same as before this change.
+    private static final Set<Unit> COUNT_UNITS = Set.of(Unit.PIECE, Unit.DOZEN);
 
     private static final Map<Unit, Double> TO_BASE = Map.of(
             Unit.KILOGRAM,   1.0,
             Unit.GRAM,       0.001,
             Unit.LITER,      1.0,
-            Unit.MILLILITER, 0.001
+            Unit.MILLILITER, 0.001,
+            Unit.PIECE,      1.0,
+            Unit.DOZEN,      12.0
     );
 
     public static double convert(double value, Unit unitIn, Unit unitOut) {
@@ -23,7 +31,8 @@ public class UnitConverter {
         }
 
         boolean sameType = (MASS_UNITS.contains(unitIn) && MASS_UNITS.contains(unitOut))
-                || (VOLUME_UNITS.contains(unitIn) && VOLUME_UNITS.contains(unitOut));
+                || (VOLUME_UNITS.contains(unitIn) && VOLUME_UNITS.contains(unitOut))
+                || (COUNT_UNITS.contains(unitIn) && COUNT_UNITS.contains(unitOut));
 
         if (!sameType) {
             throw new IllegalArgumentException(

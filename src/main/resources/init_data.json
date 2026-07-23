@@ -34,6 +34,21 @@
     { "subSubcategoryName": "Cá Tươi", "unit": "KILOGRAM", "unitQuantity": 18, "unitPrice": 95000, "daysUntilNeeded": 3, "note": "Cần cá tươi loại 1, ưu tiên cá biển" },
     { "subSubcategoryName": "Cua Ghẹ", "unit": "KILOGRAM", "unitQuantity": 10, "unitPrice": 260000, "daysUntilNeeded": 6, "note": "Cần cua ghẹ size lớn cho dịp lễ" },
     { "subSubcategoryName": "Xà Lách", "unit": "KILOGRAM", "unitQuantity": 15, "unitPrice": 30000, "daysUntilNeeded": 2, "note": "Cần rau xà lách sạch, giao gấp" },
-    { "subSubcategoryName": "Xoài", "unit": "KILOGRAM", "unitQuantity": 15, "unitPrice": 45000, "daysUntilNeeded": 8, "note": "Cần xoài cát Hòa Lộc chín tới" }
+    { "subSubcategoryName": "Xoài", "unit": "KILOGRAM", "unitQuantity": 15, "unitPrice": 45000, "daysUntilNeeded": 8, "note": "Cần xoài cát Hòa Lộc chín tới" },
+    { "subSubcategoryName": "Thịt Vịt", "unit": "KILOGRAM", "unitQuantity": 20, "unitPrice": 70000, "daysUntilNeeded": 5, "note": "Cần vịt tươi nguyên con cho nhà hàng" },
+    { "subSubcategoryName": "Thịt Dê", "unit": "KILOGRAM", "unitQuantity": 12, "unitPrice": 280000, "daysUntilNeeded": 9, "note": "Cần thịt dê tươi cho món nướng đặc sản" },
+    { "subSubcategoryName": "Mực Tươi", "unit": "KILOGRAM", "unitQuantity": 15, "unitPrice": 180000, "daysUntilNeeded": 4, "note": "Cần mực tươi size lớn cho nhà hàng hải sản" },
+    { "subSubcategoryName": "Nghêu Sò", "unit": "KILOGRAM", "unitQuantity": 25, "unitPrice": 60000, "daysUntilNeeded": 3, "note": "Cần nghêu sò tươi cho quán hải sản" },
+    { "subSubcategoryName": "Rau Muống", "unit": "KILOGRAM", "unitQuantity": 20, "unitPrice": 18000, "daysUntilNeeded": 2, "note": "Cần rau muống sạch giao gấp" },
+    { "subSubcategoryName": "Cải Xanh", "unit": "KILOGRAM", "unitQuantity": 18, "unitPrice": 22000, "daysUntilNeeded": 3, "note": "Cần cải xanh tươi cho siêu thị" },
+    { "subSubcategoryName": "Cà Rốt", "unit": "KILOGRAM", "unitQuantity": 40, "unitPrice": 25000, "daysUntilNeeded": 12, "note": "Cần cà rốt Đà Lạt cho đơn hàng lớn" },
+    { "subSubcategoryName": "Khoai Tây", "unit": "KILOGRAM", "unitQuantity": 50, "unitPrice": 20000, "daysUntilNeeded": 20, "note": "Cần khoai tây sạch cho chuỗi cửa hàng" },
+    { "subSubcategoryName": "Chuối", "unit": "KILOGRAM", "unitQuantity": 30, "unitPrice": 15000, "daysUntilNeeded": 5, "note": "Cần chuối già chín đều cho phân phối" },
+    { "subSubcategoryName": "Dưa Hấu", "unit": "KILOGRAM", "unitQuantity": 35, "unitPrice": 12000, "daysUntilNeeded": 6, "note": "Cần dưa hấu ruột đỏ cho mùa hè" },
+    { "subSubcategoryName": "Tỏi", "unit": "KILOGRAM", "unitQuantity": 10, "unitPrice": 90000, "daysUntilNeeded": 25, "note": "Cần tỏi Lý Sơn chất lượng cao" },
+    { "subSubcategoryName": "Sả", "unit": "KILOGRAM", "unitQuantity": 12, "unitPrice": 25000, "daysUntilNeeded": 6, "note": "Cần sả tươi cho chế biến gia vị" },
+    { "subSubcategoryName": "Trứng Gà Ta", "unit": "DOZEN", "unitQuantity": 30, "unitPrice": 45000, "daysUntilNeeded": 10, "note": "Cần trứng gà ta cho đơn hàng lớn" },
+    { "subSubcategoryName": "Sữa Tươi Không Đường", "unit": "LITER", "unitQuantity": 100, "unitPrice": 28000, "daysUntilNeeded": 5, "note": "Cần sữa tươi không đường cho chuỗi cà phê" },
+    { "subSubcategoryName": "Phô Mai", "unit": "KILOGRAM", "unitQuantity": 8, "unitPrice": 350000, "daysUntilNeeded": 25, "note": "Cần phô mai nhập khẩu cho nhà hàng" }
   ]
 }
