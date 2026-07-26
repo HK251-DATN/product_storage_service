@@ -18,13 +18,14 @@ public class WebConfig {
         // Allow credentials (cookies, authorization headers)
         config.setAllowCredentials(true);
 
-        // Allow your frontend origin
-        config.addAllowedOrigin("http://10.205.183.122:5173");
-        config.addAllowedOrigin("http://10.185.89.85:5173");// Vite default port
-        config.addAllowedOrigin("http://localhost:5173");
-        config.addAllowedOrigin("http://10.194.144.9:3000");// Alternative port
-        
-        config.addAllowedOrigin("http://localhost:5273");// Vite default port
+        // addAllowedOrigin("*") is rejected when allowCredentials is true, so use
+        // patterns instead: any port on localhost/127.0.0.1, plus private LAN
+        // ranges so a dev machine's DHCP-assigned IP works without editing this
+        // file per teammate/session.
+        config.addAllowedOriginPattern("http://localhost:*");
+        config.addAllowedOriginPattern("http://127.0.0.1:*");
+        config.addAllowedOriginPattern("http://192.168.*.*:*");
+        config.addAllowedOriginPattern("http://10.*.*.*:*");
 
         // Allow all headers
         config.addAllowedHeader("*");
