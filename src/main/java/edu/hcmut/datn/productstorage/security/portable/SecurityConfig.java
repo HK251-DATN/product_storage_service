@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers(HttpMethod.OPTIONS).permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                                 // TODO: restrict to internal services only once service-to-service auth is in place
                                 .requestMatchers(HttpMethod.GET, "/api/product-batch/*/proof-images").permitAll()
                                 .anyRequest().authenticated()

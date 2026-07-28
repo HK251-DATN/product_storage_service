@@ -2,7 +2,7 @@ package edu.hcmut.datn.productstorage.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +12,7 @@ import edu.hcmut.datn.productstorage.dto.response.ApiResponse;
 import edu.hcmut.datn.productstorage.service.ProviderService;
 import lombok.AllArgsConstructor;
 
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping("/api/provider")
 public class ProviderController {

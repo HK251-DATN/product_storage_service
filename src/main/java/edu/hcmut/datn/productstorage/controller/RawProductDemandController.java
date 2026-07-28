@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import edu.hcmut.datn.productstorage.common.enums.TransactionStatus;
 import edu.hcmut.datn.productstorage.dao.RawProductDemand;
@@ -102,7 +102,7 @@ import lombok.AllArgsConstructor;
  *   VIDEO       → "id" refers to a ProductSubBatch ID (pooled, multiple providers)
  * =========================================================
  */
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping("/api/raw-product-demand")
 public class RawProductDemandController {

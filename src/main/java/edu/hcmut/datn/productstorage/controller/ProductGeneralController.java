@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,7 +26,7 @@ import edu.hcmut.datn.productstorage.dto.response.PagedResponse;
 import edu.hcmut.datn.productstorage.service.ProductGeneralService;
 import lombok.AllArgsConstructor;
 
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping("/api/product-general")
 public class ProductGeneralController {

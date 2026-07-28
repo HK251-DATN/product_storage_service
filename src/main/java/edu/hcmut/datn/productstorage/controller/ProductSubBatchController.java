@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import edu.hcmut.datn.productstorage.common.enums.ProductBatchProcessStatus;
@@ -19,7 +19,7 @@ import edu.hcmut.datn.productstorage.service.ProductSubBatchService;
 import edu.hcmut.datn.productstorage.service.ProviderService;
 import lombok.AllArgsConstructor;
 
-@Controller
+@RestController
 @AllArgsConstructor
 @RequestMapping("/api/product-sub-batch")
 public class ProductSubBatchController {
